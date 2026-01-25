@@ -1,18 +1,10 @@
 // app/api/generate-certificate-pdf/[id]/route.js
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
 import { getRecordById } from '@/actions/tax';
 
 export async function GET(request, { params }) {
-  let browser = null;
-  let page = null;
-  
   try {
-    // FIX: await params
     const { id } = await params;
-
-    // Fetch the record data
     const result = await getRecordById(id);
 
     if (!result.success || !result.data) {
@@ -23,90 +15,136 @@ export async function GET(request, { params }) {
     }
 
     const record = result.data;
-
-    // Configure Chromium for serverless - SIMPLIFIED VERSION
-    try {
-      // Always use serverless configuration for Netlify
-      const executablePath = await chromium.executablePath();
-      
-      browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath,
-        headless: chromium.headless,
-        ignoreHTTPSErrors: true,
-      });
-
-      page = await browser.newPage();
-
-      // Set the HTML content
-      const html = generateCertificateHTML(record, id);
-      
-      // Use load instead of domcontentloaded
-      await page.setContent(html, {
-        waitUntil: 'load',
-        timeout: 30000,
-      });
-
-      // Wait a bit for images to load
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Generate PDF - A4 format with proper margins
-      const pdf = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: {
-          top: '10mm',
-          right: '10mm',
-          bottom: '10mm',
-          left: '10mm',
-        },
-        preferCSSPageSize: false, // Use PDF page size, not CSS
-      });
-
-      // Return PDF as response
-      return new NextResponse(pdf, {
-        headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="TCC_${record.tin || id}.pdf"`,
-        },
-      });
-      
-    } catch (browserError) {
-      console.error('Browser launch error:', browserError);
-      
-      // IMPORTANT: Throw the error instead of returning HTML
-      throw new Error(`PDF generation failed: ${browserError.message}`);
-    }
+    
+    // Generate HTML content
+    const htmlContent = generateCertificateContent(record, id);
+    
+    // Create a simple HTML page with auto-download and print
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Tax Clearance Certificate</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: #f5f5f5;
+          }
+          .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          }
+          h1 {
+            color: #333;
+            margin-bottom: 20px;
+          }
+          .instructions {
+            background: #e8f4fc;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+          }
+          .button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+          }
+          .button:hover {
+            background: #45a049;
+          }
+          .button.print {
+            background: #2196F3;
+          }
+          .button.print:hover {
+            background: #0b7dda;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>📄 Tax Clearance Certificate</h1>
+          <p>Your certificate is ready to download and print.</p>
+          
+          <div class="instructions">
+            <strong>How to get your PDF:</strong>
+            <ol>
+              <li>Click "View Certificate" below</li>
+              <li>When the certificate opens, press <strong>Ctrl+P</strong> (Windows) or <strong>Cmd+P</strong> (Mac)</li>
+              <li>In the print dialog, select <strong>"Save as PDF"</strong></li>
+              <li>Click "Save" to download your PDF</li>
+            </ol>
+          </div>
+          
+          <div style="margin: 30px 0;">
+            <a href="data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}" 
+               download="TCC_${record.tin || id}.html" 
+               class="button">
+              📥 Download HTML File
+            </a>
+            
+            <button onclick="openCertificate()" class="button print">
+              👁️ View & Print Certificate
+            </button>
+          </div>
+          
+          <p style="color: #666; font-size: 14px;">
+            <strong>Note:</strong> The certificate will open in a new window/tab for printing.
+          </p>
+        </div>
+        
+        <script>
+          function openCertificate() {
+            const htmlContent = \`${htmlContent.replace(/`/g, '\\`')}\`;
+            const newWindow = window.open();
+            newWindow.document.write(htmlContent);
+            newWindow.document.close();
+            
+            // Auto-print after 1 second
+            setTimeout(() => {
+              newWindow.print();
+            }, 1000);
+          }
+          
+          // Auto-open certificate after 2 seconds
+          setTimeout(() => {
+            openCertificate();
+          }, 2000);
+        </script>
+      </body>
+      </html>
+    `;
+    
+    return new NextResponse(html, {
+      headers: {
+        'Content-Type': 'text/html',
+      },
+    });
     
   } catch (error) {
-    console.error('Error generating PDF:', error);
+    console.error('Error generating certificate:', error);
     return NextResponse.json(
-      { error: 'Failed to generate PDF' },
+      { error: 'Failed to generate certificate' },
       { status: 500 }
     );
-  } finally {
-    // ALWAYS close page and browser, even if there's an error
-    try {
-      if (page) {
-        await page.close();
-        console.log('Page closed');
-      }
-    } catch (pageError) {
-      console.error('Error closing page:', pageError);
-    }
-    
-    try {
-      if (browser) {
-        await browser.close();
-        console.log('Browser closed');
-      }
-    } catch (browserCloseError) {
-      console.error('Error closing browser:', browserCloseError);
-    }
   }
 }
-function generateCertificateHTML(record, id) {
+
+function generateCertificateContent(record, id) {
   const formatDate = (dateStr) => {
     if (!dateStr) return 'N/A';
     try {
@@ -199,17 +237,27 @@ function generateCertificateHTML(record, id) {
     <html>
     <head>
       <meta charset="UTF-8">
+      <title>Tax Clearance Certificate - ${record.tin || id}</title>
       <style>
-        * { 
-          margin: 0; 
-          padding: 0; 
-          box-sizing: border-box; 
+        @media print {
+          @page {
+            size: A4;
+            margin: 0;
+          }
+          body {
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+          a { color: inherit; text-decoration: none; }
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
           font-family: Arial, sans-serif;
           background: white;
-          width: 210mm; /* A4 width */
-          min-height: 297mm; /* A4 height */
+          width: 210mm;
+          min-height: 297mm;
           margin: 0 auto;
           padding: 0;
         }
@@ -230,7 +278,7 @@ function generateCertificateHTML(record, id) {
         }
         .certificate {
           border: 8px solid #7f1d1d;
-          padding: 15mm; /* Reduced padding for A4 */
+          padding: 15mm;
           position: relative;
           z-index: 10;
           height: 100%;
@@ -317,21 +365,23 @@ function generateCertificateHTML(record, id) {
           justify-content: flex-end;
           margin-top: 20px;
         }
-        @media print {
-          body {
-            width: 210mm;
-            height: 297mm;
-            margin: 0;
-            padding: 0;
-          }
-          .certificate {
-            page-break-inside: avoid;
-            break-inside: avoid;
-          }
+        .print-button {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: #2196F3;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 5px;
+          cursor: pointer;
+          z-index: 1000;
         }
       </style>
     </head>
     <body>
+      <button class="print-button" onclick="window.print()">🖨️ Print as PDF</button>
+      
       <div class="container">
         <div class="watermark"></div>
         <div class="certificate">
@@ -445,6 +495,22 @@ function generateCertificateHTML(record, id) {
           </div>
         </div>
       </div>
+      
+      <script>
+        // Auto-print after 1 second
+        setTimeout(() => {
+          window.print();
+        }, 1000);
+        
+        // Close after print if opened in a new window
+        if (window.opener) {
+          window.onafterprint = function() {
+            setTimeout(() => {
+              window.close();
+            }, 500);
+          };
+        }
+      </script>
     </body>
     </html>
   `;

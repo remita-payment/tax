@@ -56,7 +56,7 @@ export default function PaymentReceipt() {
   // Generate QR data
   const generateQRData = () => {
      const BASE_URL =
-  process.env.NEXTAUTH_URL || "https://yirs.netlify.app/";
+  process.env.NEXTAUTH_URL || "https://yirs.netlify.app";
     if (!record) return ''  
     return `${BASE_URL}/taxpayer-doc/${record._id}`;
   }
