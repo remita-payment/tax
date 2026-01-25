@@ -5,6 +5,9 @@ import chromium from '@sparticuz/chromium';
 import { getRecordById } from '@/actions/tax';
 
 export async function GET(request, { params }) {
+  let browser = null;
+  let page = null;
+  
   try {
     // FIX: await params
     const { id } = await params;
@@ -21,84 +24,88 @@ export async function GET(request, { params }) {
 
     const record = result.data;
 
-    // Configure Chromium for serverless
-    let browser;
+    // Configure Chromium for serverless - SIMPLIFIED VERSION
     try {
-      if (process.env.NODE_ENV === 'production') {
-        // Production: Use serverless Chromium
-        const executablePath = await chromium.executablePath();
-        
-        browser = await puppeteer.launch({
-          args: chromium.args,
-          defaultViewport: chromium.defaultViewport,
-          executablePath,
-          headless: chromium.headless,
-          ignoreHTTPSErrors: true,
-        });
-      } else {
-        // Development: Use local Chrome
-        browser = await puppeteer.launch({
-          args: ['--no-sandbox', '--disable-setuid-sandbox'],
-          headless: 'new',
-        });
-      }
+      // Always use serverless configuration for Netlify
+      const executablePath = await chromium.executablePath();
+      
+      browser = await puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath,
+        headless: chromium.headless,
+        ignoreHTTPSErrors: true,
+      });
 
-      const page = await browser.newPage();
+      page = await browser.newPage();
 
       // Set the HTML content
       const html = generateCertificateHTML(record, id);
       
-      // Use domcontentloaded for faster rendering
+      // Use load instead of domcontentloaded
       await page.setContent(html, {
-        waitUntil: 'domcontentloaded',
+        waitUntil: 'load',
+        timeout: 30000,
       });
 
       // Wait a bit for images to load
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Generate PDF
+      // Generate PDF - A4 format with proper margins
       const pdf = await page.pdf({
-        format: 'Letter',
+        format: 'A4',
         printBackground: true,
         margin: {
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
+          top: '10mm',
+          right: '10mm',
+          bottom: '10mm',
+          left: '10mm',
         },
+        preferCSSPageSize: false, // Use PDF page size, not CSS
       });
-
-      await browser.close();
 
       // Return PDF as response
       return new NextResponse(pdf, {
         headers: {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="RPDF.pdf"`,
+          'Content-Disposition': `attachment; filename="TCC_${record.tin || id}.pdf"`,
         },
       });
       
     } catch (browserError) {
       console.error('Browser launch error:', browserError);
-      // Fallback: Return HTML that can be printed manually
-      const html = generateCertificateHTML(record, id);
-      return new NextResponse(html, {
-        headers: {
-          'Content-Type': 'text/html',
-          'Content-Disposition': `attachment; filename="RPDF.pdf"`,
-        },
-      });
+      
+      // IMPORTANT: Throw the error instead of returning HTML
+      throw new Error(`PDF generation failed: ${browserError.message}`);
     }
     
   } catch (error) {
     console.error('Error generating PDF:', error);
     return NextResponse.json(
-      { error: 'Failed to generate PDF: ' + error.message },
+      { error: 'Failed to generate PDF' },
       { status: 500 }
     );
+  } finally {
+    // ALWAYS close page and browser, even if there's an error
+    try {
+      if (page) {
+        await page.close();
+        console.log('Page closed');
+      }
+    } catch (pageError) {
+      console.error('Error closing page:', pageError);
+    }
+    
+    try {
+      if (browser) {
+        await browser.close();
+        console.log('Browser closed');
+      }
+    } catch (browserCloseError) {
+      console.error('Error closing browser:', browserCloseError);
+    }
   }
 }
-
 function generateCertificateHTML(record, id) {
   const formatDate = (dateStr) => {
     if (!dateStr) return 'N/A';
@@ -193,15 +200,22 @@ function generateCertificateHTML(record, id) {
     <head>
       <meta charset="UTF-8">
       <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+          margin: 0; 
+          padding: 0; 
+          box-sizing: border-box; 
+        }
         body { 
           font-family: Arial, sans-serif;
           background: white;
-          padding: 32px 16px;
+          width: 210mm; /* A4 width */
+          min-height: 297mm; /* A4 height */
+          margin: 0 auto;
+          padding: 0;
         }
         .container {
-          max-width: 800px;
-          margin: 0 auto;
+          width: 100%;
+          height: 100%;
           background: white;
           position: relative;
         }
@@ -216,15 +230,18 @@ function generateCertificateHTML(record, id) {
         }
         .certificate {
           border: 8px solid #7f1d1d;
-          padding: 24px;
+          padding: 15mm; /* Reduced padding for A4 */
           position: relative;
           z-index: 10;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
         }
         .header {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          margin-bottom: 24px;
+          margin-bottom: 15px;
         }
         .logo-section {
           display: flex;
@@ -235,13 +252,13 @@ function generateCertificateHTML(record, id) {
         .center-section {
           flex: 1;
           text-align: center;
-          margin-top: 24px;
+          margin-top: 15px;
         }
         .title-section {
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: -40px 0 -8px 0;
+          margin: -30px 0 -8px 0;
         }
         .title-line {
           flex: 1;
@@ -258,17 +275,18 @@ function generateCertificateHTML(record, id) {
           display: flex;
           justify-content: space-between;
           font-size: 14px;
-          margin-bottom: 40px;
+          margin-bottom: 30px;
         }
         .main-content {
           text-align: center;
-          margin-top: 80px;
+          margin-top: 40px;
+          flex: 1;
         }
         table {
           width: 100%;
-          max-width: 600px;
+          max-width: 500px;
           border-collapse: collapse;
-          margin: 0 auto 32px auto;
+          margin: 0 auto 25px auto;
           border: 2px solid #9ca3af;
         }
         th, td {
@@ -280,24 +298,36 @@ function generateCertificateHTML(record, id) {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          gap: 32px;
-          margin-bottom: 48px;
+          gap: 30px;
+          margin-top: auto;
+          margin-bottom: 20px;
         }
         .qr-section {
           display: flex;
           flex-direction: column;
           align-items: center;
-          margin-top: 8px;
         }
         .expiry-section {
           flex: 1;
           text-align: center;
-          margin-right: 40px;
+          margin-right: 30px;
         }
         .signature-section {
           display: flex;
           justify-content: flex-end;
-          margin-top: -80px;
+          margin-top: 20px;
+        }
+        @media print {
+          body {
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
+            padding: 0;
+          }
+          .certificate {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
         }
       </style>
     </head>
@@ -311,13 +341,13 @@ function generateCertificateHTML(record, id) {
               <img src="https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg" alt="YIRS Logo" style="width: 120px; height: auto;" />
             </div>
             <div class="center-section">
-              <h1 style="font-size: 28px; font-weight: bold; color: #1f2937;">YOBE STATE GOVERNMENT</h1>
-              <h2 style="font-size: 20px; font-weight: 600; color: #374151; margin-top: -8px;">INTERNAL REVENUE SERVICE</h2>
-              <p style="font-size: 14px; color: #4b5563; margin-top: 8px;">
+              <h1 style="font-size: 24px; font-weight: bold; color: #1f2937;">YOBE STATE GOVERNMENT</h1>
+              <h2 style="font-size: 18px; font-weight: 600; color: #374151; margin-top: -6px;">INTERNAL REVENUE SERVICE</h2>
+              <p style="font-size: 12px; color: #4b5563; margin-top: 6px;">
                 Revenue House, Ahmadu Bello Way<br/>
                 Damaturu Yobe State
               </p>
-              <p style="font-size: 14px; color: #4b5563; margin-top: 4px;">
+              <p style="font-size: 12px; color: #4b5563; margin-top: 3px;">
                 Website: <a href="https://irs.yb.gov.ng" style="color: #2563eb; text-decoration: underline;">https://irs.yb.gov.ng</a>
                 Email: <a href="mailto:info@irs.yb.gov.ng" style="color: #2563eb; text-decoration: underline;">info@irs.yb.gov.ng</a>
               </p>
@@ -345,18 +375,18 @@ function generateCertificateHTML(record, id) {
           </div>
 
           <div class="main-content">
-            <p style="color: #374151; margin-bottom: 16px;">This is to certify that:</p>
-            <h2 style="font-size: 24px; font-weight: bold; color: #1f2937; text-decoration: underline; margin-bottom: 16px; font-style: italic;">
+            <p style="color: #374151; margin-bottom: 12px;">This is to certify that:</p>
+            <h2 style="font-size: 20px; font-weight: bold; color: #1f2937; text-decoration: underline; margin-bottom: 12px; font-style: italic;">
               ${record.name || 'N/A'}
             </h2>
-            <p style="color: #374151; margin-bottom: 8px;">Of:</p>
-            <p style="color: #374151; font-weight: 600; margin-bottom: 16px;">
+            <p style="color: #374151; margin-bottom: 6px;">Of:</p>
+            <p style="color: #374151; font-weight: 600; margin-bottom: 12px;">
               ${record.address || 'N/A'}
             </p>
-            <p style="color: #374151; margin-bottom: 24px;">
+            <p style="color: #374151; margin-bottom: 20px;">
               Has settled his/her income tax assessments for the past three years.
             </p>
-            <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 24px;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #1f2937; margin-bottom: 20px;">
               Assessment Details as Follows:
             </h3>
           </div>
@@ -383,33 +413,33 @@ function generateCertificateHTML(record, id) {
             </tbody>
           </table>
 
-          <div style="text-align: center; margin-bottom: 32px;">
-            <h3 style="color: #374151; font-size: 20px; margin-bottom: 8px;">Source(s) of Income</h3>
-            <div style="color: #374151; font-weight: bold; font-size: 14px; text-transform: uppercase;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h3 style="color: #374151; font-size: 18px; margin-bottom: 6px;">Source(s) of Income</h3>
+            <div style="color: #374151; font-weight: bold; font-size: 13px; text-transform: uppercase;">
               ${record.sourceOfIncome || 'N/A'}
             </div>
           </div>
 
           <div class="footer-section">
             <div class="qr-section">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrValue)}" alt="QR Code" style="width: 120px; height: 120px; background: white; padding: 8px; margin-bottom: 8px;" />
-              <p style="font-size: 12px; color: #4b5563; text-align: center;">Please scan this QR code</p>
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(qrValue)}" alt="QR Code" style="width: 100px; height: 100px; background: white; padding: 5px; margin-bottom: 8px;" />
+              <p style="font-size: 11px; color: #4b5563; text-align: center;">Please scan this QR code</p>
             </div>
             <div class="expiry-section">
-              <p style="color: #374151; font-size: 20px; margin-bottom: 8px;">This Certificate expires on</p>
+              <p style="color: #374151; font-size: 16px; margin-bottom: 6px;">This Certificate expires on</p>
               <p style="color: #374151; font-weight: 600;">${formatExpiryDate(record.expiryDate)}</p>
             </div>
-            <div style="width: 96px;"></div>
+            <div style="width: 80px;"></div>
           </div>
 
           <div class="signature-section">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-              <div style="width: 96px; height: 64px; display: flex; align-items: center; justify-content: center;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+              <div style="width: 80px; height: 50px; display: flex; align-items: center; justify-content: center;">
                 <img src="https://res.cloudinary.com/djr7uqara/image/upload/v1768252957/gana67i87nyccquinbgj.png" alt="Signature" style="width: 100%; height: 100%; object-fit: contain;" />
               </div>
               <div style="text-align: center;">
-                <p style="color: #1f2937; font-weight: bold; font-size: 14px;">Executive Chairman</p>
-                <p style="color: #1f2937; font-weight: bold; font-size: 14px;">YOBE STATE IRS</p>
+                <p style="color: #1f2937; font-weight: bold; font-size: 12px;">Executive Chairman</p>
+                <p style="color: #1f2937; font-weight: bold; font-size: 12px;">YOBE STATE IRS</p>
               </div>
             </div>
           </div>
