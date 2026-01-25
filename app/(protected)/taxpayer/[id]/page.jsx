@@ -180,7 +180,7 @@ export default function TaxCertificate() {
   }
 
   // Generate QR code value
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://yirs.netlify.app";
   const qrValue = `${baseUrl}/verify-TCC/${id}`;
 
   return (

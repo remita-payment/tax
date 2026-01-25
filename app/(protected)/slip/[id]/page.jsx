@@ -333,7 +333,7 @@ export default function PayYobePage() {
               className="relative inline-block self-center sm:self-start print:self-start"
             >
               <QRCodeSVG
-                value={`${process.env.NEXTAUTH_URL || "http://localhost:3000"}/payyobe/${record.id}`}
+                value={`${process.env.NEXTAUTH_URL || "https://yirs.netlify.app"}/payyobe/${record.id}`}
                 size={120}
                 level="H"
                 includeMargin={true}
