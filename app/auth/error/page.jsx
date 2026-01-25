@@ -1,9 +1,30 @@
-// If the above still has TypeScript issues, use this plain JSX version:
+// app/auth/error/page.jsx
+import { Suspense } from 'react';
+import AuthErrorContent from './AuthErrorContent';
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="animate-pulse">
+          <div className="w-full max-w-md bg-gray-100 rounded-lg p-8">
+            <div className="h-8 w-8 mx-auto mb-4 bg-gray-300 rounded-full"></div>
+            <div className="h-6 bg-gray-300 rounded mb-2 w-3/4 mx-auto"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/2 mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    }>
+      <AuthErrorContent />
+    </Suspense>
+  );
+}
+
+// app/auth/error/AuthErrorContent.jsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
 import { AlertTriangle, ArrowLeft, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +36,7 @@ const errorMessages = {
   "Default": "An error occurred during sign in.",
 };
 
-export default function AuthErrorPage() {
+export default function AuthErrorContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [error, setError] = useState("Default");
