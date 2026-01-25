@@ -1,12 +1,16 @@
-import { LoginForm } from "@/app/components/auth/login-form";
+"use client";
 
+import { Suspense } from "react";
+import { LoginForm } from "@/app/components/auth/login-form";
 
 export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 p-4">
-      <div className="w-full max-w-md">
-        <LoginForm />
-      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <div className="w-full max-w-md">
+          <LoginForm />
+        </div>
+      </Suspense>
     </div>
   )
 }
