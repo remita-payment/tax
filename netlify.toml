@@ -1,9 +1,19 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  publish = ".next"        # ✅ Correct for Next.js with @netlify/plugin-nextjs
 
 [[plugins]]
-  package = "@netlify/plugin-nextjs"
+  package = "@netlify/plugin-nextjs"   # ✅ Correct, enables SSR/ISR and App Router
 
 [functions]
+  node_bundler = "esbuild"   # ✅ Good default
+
+# Specific configuration for the PDF generation function
+[functions.generate-certificate-pdf]
   node_bundler = "esbuild"
+  timeout = 60  # 60 seconds timeout   # ✅ Correct, increases function timeout
+
+# Add environment variables
+[build.environment]
+  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "true"  # ✅ Skip Chromium download
+  PUPPETEER_EXECUTABLE_PATH = "/opt/buildhome/.cache/ms-playwright/chromium-1084/chrome-linux/chrome"  # ✅ Use system Chrome

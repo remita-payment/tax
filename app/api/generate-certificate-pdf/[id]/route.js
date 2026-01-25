@@ -1,6 +1,7 @@
 // app/api/generate-certificate-pdf/[id]/route.js
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import { getRecordById } from '@/actions/tax';
 
 export async function GET(request, { params }) {
@@ -20,45 +21,79 @@ export async function GET(request, { params }) {
 
     const record = result.data;
 
-    // Launch Puppeteer
-    const browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
+    // Configure Chromium for serverless
+    let browser;
+    try {
+      if (process.env.NODE_ENV === 'production') {
+        // Production: Use serverless Chromium
+        const executablePath = await chromium.executablePath();
+        
+        browser = await puppeteer.launch({
+          args: chromium.args,
+          defaultViewport: chromium.defaultViewport,
+          executablePath,
+          headless: chromium.headless,
+          ignoreHTTPSErrors: true,
+        });
+      } else {
+        // Development: Use local Chrome
+        browser = await puppeteer.launch({
+          args: ['--no-sandbox', '--disable-setuid-sandbox'],
+          headless: 'new',
+        });
+      }
 
-    const page = await browser.newPage();
+      const page = await browser.newPage();
 
-    // Set the HTML content
-    const html = generateCertificateHTML(record, id);
-    await page.setContent(html, {
-      waitUntil: 'networkidle0',
-    });
+      // Set the HTML content
+      const html = generateCertificateHTML(record, id);
+      
+      // Use domcontentloaded for faster rendering
+      await page.setContent(html, {
+        waitUntil: 'domcontentloaded',
+      });
 
-    // Generate PDF
-    const pdf = await page.pdf({
-      format: 'Letter',
-      printBackground: true,
-      margin: {
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-      },
-    });
+      // Wait a bit for images to load
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-    await browser.close();
+      // Generate PDF
+      const pdf = await page.pdf({
+        format: 'Letter',
+        printBackground: true,
+        margin: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+        },
+      });
 
-    // Return PDF as response
-    return new NextResponse(pdf, {
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="RPDF.pdf"`,
-      },
-    });
+      await browser.close();
+
+      // Return PDF as response
+      return new NextResponse(pdf, {
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `attachment; filename="RPDF.pdf"`,
+        },
+      });
+      
+    } catch (browserError) {
+      console.error('Browser launch error:', browserError);
+      // Fallback: Return HTML that can be printed manually
+      const html = generateCertificateHTML(record, id);
+      return new NextResponse(html, {
+        headers: {
+          'Content-Type': 'text/html',
+          'Content-Disposition': `attachment; filename="RPDF.pdf"`,
+        },
+      });
+    }
+    
   } catch (error) {
     console.error('Error generating PDF:', error);
     return NextResponse.json(
-      { error: 'Failed to generate PDF' },
+      { error: 'Failed to generate PDF: ' + error.message },
       { status: 500 }
     );
   }
