@@ -11,10 +11,72 @@ export default function PaymentReceipt() {
   const [record, setRecord] = useState(null);
   const [loading, setLoading] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [images, setImages] = useState({
+    mainBg: '',
+    tableBg: '',
+    signature: '',
+    logo: '',
+    qrLogo: ''
+  });
+
+  // Image URLs
+  const imageUrls = {
+    mainBg: 'https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png',
+    tableBg: 'https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png',
+    signature: 'https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png',
+    logo: 'https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png',
+    qrLogo: 'https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg'
+  };
+
+  // Convert image to base64
+  const getBase64Image = async (url) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error(`Failed to load image: ${url}`, error);
+      return '';
+    }
+  };
+
+  // Load all images as base64
+  useEffect(() => {
+    async function loadImages() {
+      try {
+        const [mainBg, tableBg, signature, logo, qrLogo] = await Promise.all([
+          getBase64Image(imageUrls.mainBg),
+          getBase64Image(imageUrls.tableBg),
+          getBase64Image(imageUrls.signature),
+          getBase64Image(imageUrls.logo),
+          getBase64Image(imageUrls.qrLogo)
+        ]);
+
+        setImages({
+          mainBg,
+          tableBg,
+          signature,
+          logo,
+          qrLogo
+        });
+        setImagesLoaded(true);
+      } catch (error) {
+        console.error('Error loading images:', error);
+        setImagesLoaded(true); // Still set to true to show content
+      }
+    }
+
+    loadImages();
+  }, []);
 
   // Preload background images
   useEffect(() => {
-    const images = [
+    const imagesToPreload = [
       'https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png',
       'https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png',
       'https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png',
@@ -24,18 +86,18 @@ export default function PaymentReceipt() {
     
     let loadedCount = 0;
     
-    images.forEach(src => {
+    imagesToPreload.forEach(src => {
       const img = new window.Image();
       img.onload = () => {
         loadedCount++;
-        if (loadedCount === images.length) {
+        if (loadedCount === imagesToPreload.length) {
           setImagesLoaded(true);
         }
       };
       img.onerror = () => {
         loadedCount++;
         console.error(`Failed to load image: ${src}`);
-        if (loadedCount === images.length) {
+        if (loadedCount === imagesToPreload.length) {
           setImagesLoaded(true);
         }
       };
@@ -176,7 +238,7 @@ export default function PaymentReceipt() {
           <div 
             className="absolute inset-0 pointer-events-none"
             style={{
-              backgroundImage: `url('https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png')`,
+              backgroundImage: `url('${images.mainBg || imageUrls.mainBg}')`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
@@ -190,7 +252,7 @@ export default function PaymentReceipt() {
               <div className="flex justify-center mb-2">
                 <div className="w-20 h-20 flex items-center justify-center p-1.5 relative">
                   <img
-                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png"
+                    src={images.logo || imageUrls.logo}
                     alt="Yobe State IRS Logo"
                     className="w-full h-full object-contain"
                   />
@@ -222,7 +284,7 @@ export default function PaymentReceipt() {
                 <div 
                   className="absolute inset-0 pointer-events-none z-0"
                   style={{
-                    backgroundImage: `url('https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png')`,
+                    backgroundImage: `url('${images.tableBg || imageUrls.tableBg}')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
@@ -253,7 +315,7 @@ export default function PaymentReceipt() {
                             />
                             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                               <img
-                                src="https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg"
+                                src={images.qrLogo || imageUrls.qrLogo}
                                 alt="Logo"
                                 className="w-7 h-7 object-contain p-1 bg-white rounded-full"
                               />
@@ -345,7 +407,7 @@ export default function PaymentReceipt() {
                 <div 
                   className="h-16 w-40 flex items-end justify-center mb-1 relative overflow-hidden"
                   style={{
-                    backgroundImage: `url('https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png')`,
+                    backgroundImage: `url('${images.signature || imageUrls.signature}')`,
                     backgroundSize: "contain",
                     backgroundPosition: "center bottom",
                     backgroundRepeat: "no-repeat",
