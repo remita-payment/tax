@@ -4,7 +4,6 @@ import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
 import { getRecordById } from "@/actions/tax";
 import { useParams } from "next/navigation";
-import Image from "next/image";
 
 export default function PaymentReceipt() {
   const { id } = useParams();
@@ -164,7 +163,7 @@ export default function PaymentReceipt() {
   }
 
   return (
-    <main className="flex items-center justify-center min-h-screen p-4">
+    <main className="flex items-center justify-center min-h-screen p-4 bg-gray-100">
       <div className="w-full max-w-2xl">
         {/* Main receipt container with border and background image */}
         <div
@@ -173,18 +172,16 @@ export default function PaymentReceipt() {
             border: "2px solid #1f2937",
           }}
         >
-          {/* Background Image using Next.js Image - Better for production */}
-          <div className="absolute inset-0 pointer-events-none">
-            <Image
-              src="https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png"
-              alt=""
-              fill
-              className="object-cover"
-              priority
-              quality={90}
-              unoptimized
-            />
-          </div>
+          {/* Background Image using CSS */}
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundImage: `url('https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          />
 
           {/* Content - positioned above the background */}
           <div className="relative z-10 p-6">
@@ -192,14 +189,10 @@ export default function PaymentReceipt() {
             <div className="text-center mb-4 pb-3">
               <div className="flex justify-center mb-2">
                 <div className="w-20 h-20 flex items-center justify-center p-1.5 relative">
-                  <Image
+                  <img
                     src="https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png"
                     alt="Yobe State IRS Logo"
-                    width={80}
-                    height={80}
-                    className="object-contain"
-                    priority
-                    unoptimized
+                    className="w-full h-full object-contain"
                   />
                 </div>
               </div>
@@ -226,16 +219,15 @@ export default function PaymentReceipt() {
             <div className="mb-6">
               <div className="border-2 border-gray-800 overflow-hidden relative bg-white">
                 {/* Table background image */}
-                <div className="absolute inset-0 pointer-events-none z-0">
-                  <Image
-                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png"
-                    alt=""
-                    fill
-                    className="object-cover"
-                    quality={90}
-                    unoptimized
-                  />
-                </div>
+                <div 
+                  className="absolute inset-0 pointer-events-none z-0"
+                  style={{
+                    backgroundImage: `url('https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                />
 
                 <table className="w-full relative z-10">
                   <tbody>
@@ -260,13 +252,10 @@ export default function PaymentReceipt() {
                               className="w-44 h-44"
                             />
                             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                              <Image
+                              <img
                                 src="https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg"
                                 alt="Logo"
-                                width={28}
-                                height={28}
-                                className="object-contain p-1 bg-white rounded-full"
-                                unoptimized
+                                className="w-7 h-7 object-contain p-1 bg-white rounded-full"
                               />
                             </div>
                           </div>
@@ -353,16 +342,15 @@ export default function PaymentReceipt() {
             {/* Footer with Signature */}
             <div className="flex justify-center mt-4 mb-2">
               <div className="text-center">
-                <div className="h-16 flex items-end justify-center mb-1 relative overflow-hidden w-40">
-                  <Image
-                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png"
-                    alt="Signature"
-                    width={160}
-                    height={64}
-                    className="object-contain object-bottom"
-                    unoptimized
-                  />
-                </div>
+                <div 
+                  className="h-16 w-40 flex items-end justify-center mb-1 relative overflow-hidden"
+                  style={{
+                    backgroundImage: `url('https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png')`,
+                    backgroundSize: "contain",
+                    backgroundPosition: "center bottom",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                />
                 <p className="text-xs font-bold tracking-wide text-gray-800">
                   EXECUTIVE CHAIRMAN
                 </p>
