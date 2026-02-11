@@ -1,265 +1,345 @@
-"use client"
+"use client";
 
-import { QRCodeSVG } from 'qrcode.react'
-import { useEffect, useState } from 'react'
-import { getRecordById } from '@/actions/tax'
-import { useParams } from 'next/navigation'
+import { QRCodeSVG } from "qrcode.react";
+import { useEffect, useState } from "react";
+import { getRecordById } from "@/actions/tax";
+import { useParams } from "next/navigation";
 
 export default function PaymentReceipt() {
-  const {id} = useParams()
-  
-  const [record, setRecord] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const { id } = useParams();
+
+  const [record, setRecord] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Fetch record data
   useEffect(() => {
     async function fetchRecord() {
       if (!id) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
       try {
-        setLoading(true)
-        const result = await getRecordById(id)
+        setLoading(true);
+        const result = await getRecordById(id);
         if (result.success) {
-          setRecord(result.data)
+          setRecord(result.data);
         }
       } catch (err) {
-        console.error(err)
+        console.error(err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchRecord()
-  }, [id])
+    fetchRecord();
+  }, [id]);
 
   // Format date
-   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A'
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
     try {
-      const date = new Date(dateString)
-      
+      const date = new Date(dateString);
+
       // Get day, month, and year
-      const day = String(date.getDate()).padStart(2, '0')
-      const month = date.toLocaleString('en-US', { month: 'short' }) // Gets "Jun"
-      const year = date.getFullYear()
-      
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = date.toLocaleString("en-US", { month: "short" });
+      const year = date.getFullYear();
+
       // Return in format "03-Jun-2025"
-      return `${day}-${month}-${year}`
+      return `${day}-${month}-${year}`;
     } catch (error) {
-      return 'Invalid Date'
+      return "Invalid Date";
     }
-  }
+  };
 
   // Generate QR data
   const generateQRData = () => {
-     const BASE_URL =
-  process.env.NEXTAUTH_URL || "https://yirs.netlify.app";
-    if (!record) return ''  
+    const BASE_URL = process.env.NEXTAUTH_URL || "https://yirs.netlify.app";
+    if (!record) return "";
     return `${BASE_URL}/taxpayer-doc/${record._id}`;
-  }
+  };
 
   // Skeleton Loader
   if (loading) {
     return (
       <main className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
         <div className="w-full max-w-2xl">
-          <div className="bg-white p-8 border-2 border-gray-800">
-            {/* Header Skeleton */}
-            <div className="text-center mb-8 pb-6">
-              <div className="flex justify-center mb-3">
-                <div className="w-16 h-16 bg-gray-300 animate-pulse rounded"></div>
+          <div className="bg-white p-6 border-2 border-gray-800 rounded-xl">
+            <div className="text-center mb-4 pb-4">
+              <div className="flex justify-center mb-2">
+                <div className="w-20 h-20 bg-gray-300 animate-pulse rounded"></div>
               </div>
-              <div className="h-7 w-48 bg-gray-300 animate-pulse rounded mx-auto mb-2"></div>
-              <div className="h-5 w-64 bg-gray-300 animate-pulse rounded mx-auto mb-4"></div>
-              <div className="h-4 w-80 bg-gray-300 animate-pulse rounded mx-auto"></div>
+              <div className="h-8 w-56 bg-gray-300 animate-pulse rounded mx-auto mb-1"></div>
+              <div className="h-6 w-72 bg-gray-300 animate-pulse rounded mx-auto"></div>
             </div>
-
-            {/* Title Skeleton */}
-            <div className="text-center mb-6">
-              <div className="h-7 w-64 bg-gray-300 animate-pulse rounded mx-auto"></div>
+            <div className="text-center mb-4">
+              <div className="h-6 w-64 bg-gray-300 animate-pulse rounded mx-auto"></div>
             </div>
-
-            {/* Content Skeleton - Simplified without table */}
-            <div className="mb-8">
+            <div className="mb-6">
               <div className="border-2 border-gray-800 overflow-hidden">
-                {/* Left side content skeleton */}
                 <div className="grid grid-cols-3">
-                  <div className="col-span-2 p-4 space-y-4">
+                  <div className="col-span-2 p-3 space-y-2">
                     {[...Array(10)].map((_, index) => (
-                      <div key={index} className="flex items-center space-x-4">
-                        <div className="w-24 h-4 bg-gray-300 animate-pulse rounded"></div>
-                        <div className="flex-1 h-4 bg-gray-300 animate-pulse rounded"></div>
+                      <div key={index} className="flex items-center space-x-3">
+                        <div className="w-24 h-3.5 bg-gray-300 animate-pulse rounded"></div>
+                        <div className="flex-1 h-3.5 bg-gray-300 animate-pulse rounded"></div>
                       </div>
                     ))}
                   </div>
-                  
-                  {/* QR Code skeleton */}
-                  <div className="border-l border-gray-800 p-4 flex items-center justify-center">
-                    <div className="w-40 h-40 bg-gray-300 animate-pulse rounded"></div>
+                  <div className="border-l border-gray-800 p-3 flex items-center justify-center">
+                    <div className="w-44 h-44 bg-gray-300 animate-pulse rounded"></div>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* Footer Skeleton */}
-            <div className="flex justify-center mt-12 mb-6">
+            <div className="flex justify-center mt-6 mb-4">
               <div className="text-center">
-                <div className="h-24 flex items-end justify-center mb-2">
-                  <div className="h-20 w-48 bg-gray-300 animate-pulse rounded"></div>
+                <div className="h-20 flex items-end justify-center mb-1">
+                  <div className="h-16 w-40 bg-gray-300 animate-pulse rounded"></div>
                 </div>
-                <div className="h-5 w-48 bg-gray-300 animate-pulse rounded"></div>
+                <div className="h-4 w-48 bg-gray-300 animate-pulse rounded"></div>
               </div>
             </div>
           </div>
         </div>
       </main>
-    )
+    );
   }
 
   // Show error if no record found
   if (!record) {
     return (
       <main className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-        <div className="w-full max-w-2xl bg-white p-8 shadow-2xl border-2 border-gray-800">
-          <div className="text-center py-12">
+        <div className="w-full max-w-2xl bg-white p-6  border-2 border-gray-800">
+          <div className="text-center py-8">
             <div className="mb-4">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <div className="w-10 h-10 bg-red-200 rounded-full"></div>
               </div>
             </div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Receipt Not Found</h2>
-            <p className="text-gray-600">Unable to load receipt data for ID: {id}</p>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">
+              Receipt Not Found
+            </h2>
+            <p className="text-gray-600">
+              Unable to load receipt data for ID: {id}
+            </p>
           </div>
         </div>
       </main>
-    )
+    );
   }
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <main className="flex items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-2xl">
-        {/* Main receipt container with rounded border */}
-        <div className="bg-white p-8 shadow-2xl border-2 border-gray-800">
-          {/* Header */}
-          <div className="text-center mb-8 pb-6">
-            <div className="flex justify-center mb-3">
-              {/* Logo */}
-              <div className="w-16 h-16 flex items-center justify-center">
-                <img 
-                  src="https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg" 
-                  alt="Yobe State IRS Logo"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-            <h1 className="text-xl font-bold tracking-wide">YOBE STATE</h1>
-            <p className="text-sm font-semibold text-gray-700">INTERNAL REVENUE SERVICE</p>
-            <div className="mt-4 text-xs text-gray-700 space-y-1 border-t-2 border-b-2 p-2 border-gray-800">
-              <p>Tel: 07065798000 | 08030051026 Email: info@yirs.gov.ng Website: www.yirs.gov.ng</p>
-            </div>
-          </div>
+        {/* Main receipt container with rounded border and background image */}
+        <div
+          className="relative overflow-hidden "
+          style={{
+            border: "2px solid #1f2937",
+          }}
+        >
+          {/* Background Image - Fits perfectly inside rounded border */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url('https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
 
-          {/* Receipt Title */}
-          <h2 className="text-center text-lg font-bold tracking-wide mb-6">OFFICIAL E-PAYMENT RECEIPT</h2>
+          {/* Semi-transparent overlay for entire container - REDUCED OPACITY */}
+          <div className="absolute inset-0" />
 
-          {/* Combined Table with QR Code */}
-          <div className="mb-8">
-            <div className="border-2 border-gray-800 overflow-hidden">
-              <table className="w-full">
-                <tbody>
-                  <tr className="border-b border-gray-800">
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm w-30">Payer:</td>
-                    <td className="p-3 text-sm">{record.name || 'N/A'}</td>
-                    <td 
-                      rowSpan={10} 
-                      className="border-l border-gray-800 p-4 text-center w-48"
-                    >
-                      <div className="flex flex-col items-center justify-center h-full space-y-3">
-                        {/* QR Code with Logo */}
-                        <div className="relative bg-white p-2">
-                          <QRCodeSVG
-                            value={generateQRData()}
-                            size={160}
-                            level="M"
-                            includeMargin={true}
-                            className="w-40 h-40"
-                            bgColor="#FFFFFF"
-                            fgColor="#000000"
-                          />
-                          {/* Logo overlay */}
-                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                            <img 
-                              src="https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg" 
-                              alt="Logo"
-                              className="w-5 h-5 object-contain bg-white p-1 rounded-md"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm">Phone:</td>
-                    <td className="p-3 text-sm">{record.phoneNo || 'N/A'}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm">Email:</td>
-                    <td className="p-3 text-sm">{record.email || 'N/A'}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm">Reference:</td>
-                    <td className="p-3 text-sm">{record.reference || 'N/A'}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm">Revenue:</td>
-                    <td className="p-3 text-sm">{record.revenue || 'N/A'}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm">Amount:</td>
-                    <td className="p-3 text-sm">{record.amountFormatted || 'N/A'}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm">Platform:</td>
-                    <td className="p-3 text-sm">{record.platform || 'N/A'}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm">Payment Details:</td>
-                    <td className="p-3 text-sm">{record.revenue || 'N/A'}</td>
-                  </tr>
-                  <tr className="border-b border-gray-800">
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm">ID/Batch:</td>
-                    <td className="p-3 text-sm">{record.idBatch || 'N/A'}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-r border-gray-800 p-3 font-semibold text-sm">Payment Date:</td>
-                    <td className="p-3 text-sm">{formatDate(record.issueDate)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Footer with Signature */}
-          <div className="flex justify-center mt-12 mb-6">
-            <div className="text-center">
-              <div className="h-24 flex items-end justify-center mb-2">
-                {/* Signature Image */}
-                <div className="h-20 w-48 flex items-center justify-center">
-                  <img 
-                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1768252957/gana67i87nyccquinbgj.png" 
-                    alt="Executive Chairman Signature"
-                    className="h-full w-auto object-contain"
+          {/* Content - positioned above the background */}
+          <div className="relative z-10 p-6">
+            {/* Header - Increased sizes */}
+            <div className="text-center mb-4 pb-3">
+              <div className="flex justify-center mb-2">
+                <div className="w-20 h-20 flex items-center justify-center p-1.5">
+                  <img
+                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png"
+                    alt="Yobe State IRS Logo"
+                    className="w-full h-full object-contain"
                   />
                 </div>
               </div>
-              <p className="text-sm font-semibold tracking-wide text-gray-800">EXECUTIVE CHAIRMAN</p>
+              <h1 className="text-2xl font-extrabold tracking-wide text-blue-900">
+                YOBE STATE
+              </h1>
+              <p className="text-base font-bold text-blue-900">
+                INTERNAL REVENUE SERVICE
+              </p>
+              <div className="mt-3 text-xs text-gray-700 space-y-1 border-t-2 border-b-2 py-1.5 px-2 border-gray-800">
+                <p>
+                  Tel: 07065798000 | 08030051026 Email: info@yirs.gov.ng
+                  Website: www.yirs.gov.ng
+                </p>
+              </div>
+            </div>
+
+            {/* Receipt Title */}
+            <h2 className="text-center text-base font-extrabold tracking-wide mb-4 uppercase text-gray-900">
+              OFFICIAL E-PAYMENT RECEIPT
+            </h2>
+
+            {/* Combined Table with QR Code - FIXED BACKGROUND */}
+            <div className="mb-6">
+              <div
+                className="border-2 border-gray-800 overflow-hidden relative"
+                style={{
+                  backgroundImage: `url('https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png')`,
+                  backgroundSize: "100% auto",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              >
+                {/* REMOVED the overlay div - instead use semi-transparent backgrounds on cells */}
+                <table className="w-full relative z-10">
+                  <tbody>
+                    <tr className="border-b border-gray-800">
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs w-28">
+                        Payer:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs">
+                        {record.name || "N/A"}
+                      </td>
+                      <td
+                        rowSpan={10}
+                        className="border-l border-gray-800 p-2 text-center w-56 align-middle"
+                      >
+                        <div className="flex flex-col items-center justify-center h-full space-y-1">
+                          <div className="relative p-1.5">
+                            {/* Increased QR code size */}
+                            <QRCodeSVG
+                              value={generateQRData()}
+                              size={200}
+                              level="M"
+                              includeMargin={true}
+                              className="w-44 h-44"
+                              // bgColor="#FFFFFF"
+                              // fgColor="#000000"
+                            />
+                            {/* Slightly larger logo overlay */}
+                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                              <img
+                                src="https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg"
+                                alt="Logo"
+                                className="w-7 h-7 object-contain p-1"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-800">
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs">
+                        Phone:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs">
+                        {record.phoneNo || "N/A"}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-800">
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs">
+                        Email:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs break-all">
+                        {record.email || "N/A"}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-800">
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs">
+                        Reference:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs">
+                        {record.reference || "N/A"}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-800">
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs">
+                        Revenue:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs">
+                        {record.revenue || "N/A"}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-800">
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs">
+                        Amount:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs font-medium">
+                        {record.amountFormatted || "N/A"}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-800">
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs">
+                        Platform:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs">
+                        {record.platform || "N/A"}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-800">
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs">
+                        Payment Details:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs">
+                        {record.revenue || "N/A"}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-800">
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs">
+                        ID/Batch:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs">
+                        {record.idBatch || "N/A"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border-r border-gray-800 px-2.5 py-1.5 font-semibold text-xs">
+                        Payment Date:
+                      </td>
+                      <td className="px-2.5 py-1.5 text-xs">
+                        {formatDate(record.issueDate)}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Footer with Signature - FIXED BACKGROUND */}
+            <div className="flex justify-center mt-4 mb-2">
+              <div className="text-center">
+                <div
+                  className="h-16 flex items-end justify-center mb-1 relative overflow-hidden"
+                  style={{
+                    backgroundImage: `url('https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png')`,
+                    backgroundSize: "100% auto",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                >
+                  {/* REMOVED the overlay div - use background on image container instead */}
+                  {/* <div className="h-14 w-36 flex items-center justify-center p-1.5 relative bg-transparent">
+                    <img
+                      src="https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png"
+                      alt="Executive Chairman Signature"
+                      className="h-full w-auto"
+                    />
+                  </div> */}
+                </div>
+                <p className="text-xs font-bold tracking-wide text-gray-800">
+                  EXECUTIVE CHAIRMAN
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </main>
-  )
+  );
 }
