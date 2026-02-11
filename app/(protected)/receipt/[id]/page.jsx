@@ -10,29 +10,6 @@ export default function PaymentReceipt() {
 
   const [record, setRecord] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [imageErrors, setImageErrors] = useState({});
-  const [imageLoaded, setImageLoaded] = useState({});
-
-  // Image URLs
-  const images = {
-    mainBg: "https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png",
-    tableBg: "https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png",
-    signature: "https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png",
-    logo: "https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png",
-    qrLogo: "https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg"
-  };
-
-  // Handle image errors
-  const handleImageError = (imageName, error) => {
-    console.error(`Failed to load ${imageName}:`, error);
-    setImageErrors(prev => ({ ...prev, [imageName]: true }));
-  };
-
-  // Handle image load success
-  const handleImageLoad = (imageName) => {
-    console.log(`Successfully loaded ${imageName}`);
-    setImageLoaded(prev => ({ ...prev, [imageName]: true }));
-  };
 
   // Fetch record data
   useEffect(() => {
@@ -143,15 +120,6 @@ export default function PaymentReceipt() {
 
   return (
     <main className="flex items-center justify-center min-h-screen p-4 bg-gray-100">
-      {/* Debug info - remove this in production */}
-      <div className="fixed top-4 right-4 bg-black text-white p-2 text-xs rounded z-50 max-w-xs">
-        <div>Main BG: {imageLoaded.mainBg ? '✅' : imageErrors.mainBg ? '❌' : '⏳'}</div>
-        <div>Table BG: {imageLoaded.tableBg ? '✅' : imageErrors.tableBg ? '❌' : '⏳'}</div>
-        <div>Signature: {imageLoaded.signature ? '✅' : imageErrors.signature ? '❌' : '⏳'}</div>
-        <div>Logo: {imageLoaded.logo ? '✅' : imageErrors.logo ? '❌' : '⏳'}</div>
-        <div>QR Logo: {imageLoaded.qrLogo ? '✅' : imageErrors.qrLogo ? '❌' : '⏳'}</div>
-      </div>
-
       <div className="w-full max-w-2xl">
         {/* Main receipt container */}
         <div
@@ -160,23 +128,13 @@ export default function PaymentReceipt() {
             border: "2px solid #1f2937",
           }}
         >
-          {/* Background Image - using img tag with error handling */}
+          {/* Main Background Image - Using IMG tag (same as table which works) */}
           <img 
-            src={images.mainBg}
+            src="https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png"
             alt=""
             className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-            onError={(e) => {
-              handleImageError('mainBg', e);
-              e.target.style.display = 'none';
-            }}
-            onLoad={() => handleImageLoad('mainBg')}
-            crossOrigin="anonymous"
+            style={{ zIndex: 0 }}
           />
-
-          {/* Fallback background color if image fails */}
-          {imageErrors.mainBg && (
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-gray-50 pointer-events-none" />
-          )}
 
           {/* Content */}
           <div className="relative z-10 p-6">
@@ -185,12 +143,9 @@ export default function PaymentReceipt() {
               <div className="flex justify-center mb-2">
                 <div className="w-20 h-20 flex items-center justify-center p-1.5 relative">
                   <img
-                    src={images.logo}
+                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png"
                     alt="Yobe State IRS Logo"
                     className="w-full h-full object-contain"
-                    onError={(e) => handleImageError('logo', e)}
-                    onLoad={() => handleImageLoad('logo')}
-                    crossOrigin="anonymous"
                   />
                 </div>
               </div>
@@ -216,23 +171,12 @@ export default function PaymentReceipt() {
             {/* Combined Table with QR Code */}
             <div className="mb-6">
               <div className="border-2 border-gray-800 overflow-hidden relative bg-white">
-                {/* Table background image */}
+                {/* Table background image - this one works fine */}
                 <img 
-                  src={images.tableBg}
+                  src="https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png"
                   alt=""
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
-                  onError={(e) => {
-                    handleImageError('tableBg', e);
-                    e.target.style.display = 'none';
-                  }}
-                  onLoad={() => handleImageLoad('tableBg')}
-                  crossOrigin="anonymous"
                 />
-
-                {/* Fallback background if image fails */}
-                {imageErrors.tableBg && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-blue-50 pointer-events-none z-0" />
-                )}
 
                 <table className="w-full relative z-10">
                   <tbody>
@@ -258,12 +202,9 @@ export default function PaymentReceipt() {
                             />
                             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                               <img
-                                src={images.qrLogo}
+                                src="https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg"
                                 alt="Logo"
                                 className="w-7 h-7 object-contain p-1 bg-white rounded-full"
-                                onError={(e) => handleImageError('qrLogo', e)}
-                                onLoad={() => handleImageLoad('qrLogo')}
-                                crossOrigin="anonymous"
                               />
                             </div>
                           </div>
@@ -352,12 +293,9 @@ export default function PaymentReceipt() {
               <div className="text-center">
                 <div className="h-16 w-40 flex items-end justify-center mb-1 relative overflow-hidden">
                   <img 
-                    src={images.signature}
+                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png"
                     alt="Signature"
                     className="w-full h-full object-contain object-bottom"
-                    onError={(e) => handleImageError('signature', e)}
-                    onLoad={() => handleImageLoad('signature')}
-                    crossOrigin="anonymous"
                   />
                 </div>
                 <p className="text-xs font-bold tracking-wide text-gray-800">
