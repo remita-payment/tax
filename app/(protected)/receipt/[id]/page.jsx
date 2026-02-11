@@ -123,7 +123,7 @@ export default function PaymentReceipt() {
       <div className="w-full max-w-2xl">
         {/* Main receipt container */}
         <div
-          className="relative overflow-hidden bg-white"
+          className="relative overflow-hidde"
           style={{
             border: "2px solid #1f2937",
           }}
