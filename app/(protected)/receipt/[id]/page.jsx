@@ -10,100 +10,6 @@ export default function PaymentReceipt() {
 
   const [record, setRecord] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [images, setImages] = useState({
-    mainBg: '',
-    tableBg: '',
-    signature: '',
-    logo: '',
-    qrLogo: ''
-  });
-
-  // Image URLs
-  const imageUrls = {
-    mainBg: 'https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png',
-    tableBg: 'https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png',
-    signature: 'https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png',
-    logo: 'https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png',
-    qrLogo: 'https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg'
-  };
-
-  // Convert image to base64
-  const getBase64Image = async (url) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    } catch (error) {
-      console.error(`Failed to load image: ${url}`, error);
-      return '';
-    }
-  };
-
-  // Load all images as base64
-  useEffect(() => {
-    async function loadImages() {
-      try {
-        const [mainBg, tableBg, signature, logo, qrLogo] = await Promise.all([
-          getBase64Image(imageUrls.mainBg),
-          getBase64Image(imageUrls.tableBg),
-          getBase64Image(imageUrls.signature),
-          getBase64Image(imageUrls.logo),
-          getBase64Image(imageUrls.qrLogo)
-        ]);
-
-        setImages({
-          mainBg,
-          tableBg,
-          signature,
-          logo,
-          qrLogo
-        });
-        setImagesLoaded(true);
-      } catch (error) {
-        console.error('Error loading images:', error);
-        setImagesLoaded(true); // Still set to true to show content
-      }
-    }
-
-    loadImages();
-  }, []);
-
-  // Preload background images
-  useEffect(() => {
-    const imagesToPreload = [
-      'https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png',
-      'https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png',
-      'https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png',
-      'https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png',
-      'https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg'
-    ];
-    
-    let loadedCount = 0;
-    
-    imagesToPreload.forEach(src => {
-      const img = new window.Image();
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === imagesToPreload.length) {
-          setImagesLoaded(true);
-        }
-      };
-      img.onerror = () => {
-        loadedCount++;
-        console.error(`Failed to load image: ${src}`);
-        if (loadedCount === imagesToPreload.length) {
-          setImagesLoaded(true);
-        }
-      };
-      img.src = src;
-    });
-  }, []);
 
   // Fetch record data
   useEffect(() => {
@@ -234,15 +140,12 @@ export default function PaymentReceipt() {
             border: "2px solid #1f2937",
           }}
         >
-          {/* Background Image using CSS */}
-          <div 
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              backgroundImage: `url('${images.mainBg || imageUrls.mainBg}')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
+          {/* Background Image using img tag */}
+          <img 
+            src="https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            style={{ opacity: 1 }}
           />
 
           {/* Content - positioned above the background */}
@@ -252,7 +155,7 @@ export default function PaymentReceipt() {
               <div className="flex justify-center mb-2">
                 <div className="w-20 h-20 flex items-center justify-center p-1.5 relative">
                   <img
-                    src={images.logo || imageUrls.logo}
+                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png"
                     alt="Yobe State IRS Logo"
                     className="w-full h-full object-contain"
                   />
@@ -280,15 +183,12 @@ export default function PaymentReceipt() {
             {/* Combined Table with QR Code */}
             <div className="mb-6">
               <div className="border-2 border-gray-800 overflow-hidden relative bg-white">
-                {/* Table background image */}
-                <div 
-                  className="absolute inset-0 pointer-events-none z-0"
-                  style={{
-                    backgroundImage: `url('${images.tableBg || imageUrls.tableBg}')`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                  }}
+                {/* Table background image using img tag */}
+                <img 
+                  src="https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
+                  style={{ opacity: 1 }}
                 />
 
                 <table className="w-full relative z-10">
@@ -315,7 +215,7 @@ export default function PaymentReceipt() {
                             />
                             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                               <img
-                                src={images.qrLogo || imageUrls.qrLogo}
+                                src="https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg"
                                 alt="Logo"
                                 className="w-7 h-7 object-contain p-1 bg-white rounded-full"
                               />
@@ -404,15 +304,13 @@ export default function PaymentReceipt() {
             {/* Footer with Signature */}
             <div className="flex justify-center mt-4 mb-2">
               <div className="text-center">
-                <div 
-                  className="h-16 w-40 flex items-end justify-center mb-1 relative overflow-hidden"
-                  style={{
-                    backgroundImage: `url('${images.signature || imageUrls.signature}')`,
-                    backgroundSize: "contain",
-                    backgroundPosition: "center bottom",
-                    backgroundRepeat: "no-repeat",
-                  }}
-                />
+                <div className="h-16 w-40 flex items-end justify-center mb-1 relative overflow-hidden">
+                  <img 
+                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1770844290/vn2vjx00urhqc4bamo5o.png"
+                    alt="Signature"
+                    className="w-full h-full object-contain object-bottom"
+                  />
+                </div>
                 <p className="text-xs font-bold tracking-wide text-gray-800">
                   EXECUTIVE CHAIRMAN
                 </p>
