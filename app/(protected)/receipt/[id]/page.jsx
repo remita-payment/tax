@@ -130,7 +130,7 @@ export default function PaymentReceipt() {
         >
           {/* Main Background Image - Using IMG tag (same as table which works) */}
           <img 
-            src="https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png"
+            src="https://res.cloudinary.com/djr7uqara/image/upload/v1771011800/yrxzw1jq44gmoovg69pz.png"
             alt=""
             className="absolute inset-0 w-full h-full object-cover pointer-events-none"
             style={{ zIndex: 0 }}
