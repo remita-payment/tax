@@ -123,14 +123,14 @@ export default function PaymentReceipt() {
       <div className="w-full max-w-2xl">
         {/* Main receipt container */}
         <div
-          className="relative overflow-hidde"
+          className="relative overflow-hidden"
           style={{
             border: "2px solid #1f2937",
           }}
         >
           {/* Main Background Image - Using IMG tag (same as table which works) */}
           <img 
-            src="https://res.cloudinary.com/djr7uqara/image/upload/v1770838388/f03c2kckuwohpl7jukvy.png"
+            src="https://res.cloudinary.com/djr7uqara/image/upload/v1770842428/u3k07v93mlhzdtfoyjjy.png"
             alt=""
             className="absolute inset-0 w-full h-full object-cover pointer-events-none"
             style={{ zIndex: 0 }}
