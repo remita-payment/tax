@@ -46,11 +46,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             console.log("❌ User not found");
             return null;
           }
-
-          console.log("✅ User found:", user.email);
           
           if (!user.password) {
             console.log("❌ User has no password");
+            return null;
+          }
+
+          if(user.status !== 'Active'){
             return null;
           }
 
@@ -64,7 +66,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return null;
           }
 
-          console.log("✅ Login successful, returning user");
           
           return {
             id: user._id?.toString(),

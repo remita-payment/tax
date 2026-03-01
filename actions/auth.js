@@ -19,7 +19,8 @@ export async function login(values) {
     };
   }
 
-  const { email, password } = validatedFields.data;
+
+  console.log(email, password)
 
   try {
     // IMPORTANT: We use redirect: false to handle the response manually
