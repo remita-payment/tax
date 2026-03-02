@@ -1,9 +1,12 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
   reactCompiler: true,
 
-    // Your existing image configuration
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
+
   images: {
     remotePatterns: [
       {
@@ -16,7 +19,7 @@ const nextConfig = {
         hostname: 'res.cloudinary.com',
         pathname: '/djr7uqara/**',
       },
-       {
+      {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
