@@ -25,6 +25,34 @@ const nextConfig = {
       },
     ],
   },
+
+  // Add custom headers
+  async headers() {
+    return [
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/:path*.js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
