@@ -1,11 +1,11 @@
 const nextConfig = {
   reactCompiler: true,
 
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '2mb',
-    },
-  },
+  // experimental: {
+  //   serverActions: {
+  //     bodySizeLimit: '2mb',
+  //   },
+  // },
 
   images: {
     remotePatterns: [
@@ -24,34 +24,6 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
-  },
-
-  // Add custom headers
-  async headers() {
-    return [
-      {
-        source: '/_next/static/:path*',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/javascript',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/:path*.js',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/javascript',
-          },
-        ],
-      },
-    ];
   },
 };
 
