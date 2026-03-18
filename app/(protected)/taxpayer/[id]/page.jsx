@@ -248,7 +248,7 @@ export default function TaxCertificate() {
               </div>
             </div>
 
-            <div className="text-center mt-18">
+            <div className="text-center mt-8">
               <p className="text-gray-700 mb-6 text-[35px]">This is to certify that:</p>
               <h2 className="text-[35px] font-bold text-gray-800 underline mb-6 italic">
                 {record.name || "N/A"}
