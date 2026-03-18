@@ -14,7 +14,7 @@ export default function TaxCertificate() {
   const [loading, setLoading] = useState(true);
 
   const yirsLogoUrl =
-    "https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg";
+    "https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png";
 
   useEffect(() => {
     const fetchRecord = async () => {
@@ -138,7 +138,7 @@ export default function TaxCertificate() {
     return (
       <div className="container mx-auto py-8 px-4">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold">Tax Clearance Certificate</h1>
+          <h1 className="text-[35px] font-bold">Tax Clearance Certificate</h1>
           <p className="text-muted-foreground">Taxpayer record not found</p>
         </div>
         <Card>
@@ -159,16 +159,17 @@ export default function TaxCertificate() {
     <div className="mx-auto">
       <div className="min-h-screen py-8 px-4 flex items-center justify-center bg-white">
         <div className="w-full max-w-5xl bg-white relative">
-          <div
-            className="absolute inset-0 pointer-events-none overflow-hidden"
-            style={{
-              backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='24'><text x='0' y='18' font-size='15' font-weight='bold' fill='rgba(0,0,0,0.045)'>yirs yirs</text></svg>")`,
-              backgroundRepeat: "repeat",
-              backgroundSize: "80px 30px",
-            }}
-          ></div>
+          {/* Background Image - Now covers entire container including padding areas */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <img
+              src='https://res.cloudinary.com/djr7uqara/image/upload/v1/lvz2hkotpazmh5m54bkv.png'
+              alt="YIRS Background Image"
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-          <div className="pt-8 pr-8 pl-8 pb-8 z-10 border-5 border-red-900 relative">
+          {/* Content - sits on top of background */}
+          <div className="relative pt-8 pr-8 pl-8 pb-8 border-6 border-red-900">
             <div className="flex items-start justify-between mb-8">
               <div className="flex flex-col items-center gap-3">
                 <p className="text-lg font-semibold text-gray-800">REV.15A</p>
@@ -181,19 +182,19 @@ export default function TaxCertificate() {
                 </div>
               </div>
 
-              <div className="flex-1 flex flex-col items-center justify-center mt-8">
-                <h1 className="text-3xl font-bold text-gray-800 text-center">
+              <div className="flex-1 flex flex-col items-center justify-center mt-6">
+                <h1 className="text-5xl font-bold text-gray-800 text-center">
                   YOBE STATE GOVERNMENT
                 </h1>
-                <h2 className="text-xl font-semibold text-gray-700 text-center -mt-2">
+                <h2 className="text-3xl font-semibold text-gray-700 text-center -mt-2">
                   INTERNAL REVENUE SERVICE
                 </h2>
-                <p className="text-base text-gray-600 text-center">
+                <p className="text-lg font-bold text-gray-600 text-center">
                   Revenue House, Ahmadu Bello Way
-                  <br className="-mt-2" />
+                  <br className="mt-0" />
                   Damaturu Yobe State
                 </p>
-                <p className="text-base text-gray-600 text-center -mt-1">
+                <p className="text-base font-bold text-gray-600 text-center -mt-1">
                   Website:{" "}
                   <a
                     href="https://irs.yb.gov.ng"
@@ -212,13 +213,13 @@ export default function TaxCertificate() {
               </div>
 
               <div className="text-right">
-                <p className="text-lg font-semibold text-gray-800">Original</p>
+                <p className="text-lg font-semibold text-gray-800 italic">Original</p>
               </div>
             </div>
 
             <div className="-mb-2 flex items-center justify-center w-full -mt-12">
               <div className="flex-1 border-t-8 border-double border-red-400"></div>
-              <h3 className="mx-6 text-xl font-bold text-gray-800 whitespace-nowrap">
+              <h3 className="mx-6 text-[24px] font-bold text-gray-800 whitespace-nowrap">
                 e-TAX CLEARANCE CERTIFICATE
               </h3>
               <div className="flex-1 border-t-8 border-double border-red-400"></div>
@@ -227,10 +228,10 @@ export default function TaxCertificate() {
             <div className="flex justify-between text-base mb-12">
               <div>
                 <p className="text-gray-700">
-                  <span className="font-semibold">TIN:</span> {record.tin || "N/A"}
+                  <span className="text-lg">TIN:</span> {record.tin || "N/A"}
                 </p>
                 <p className="text-gray-700 mt-2">
-                  <span className="font-semibold">Certificate No:</span>{" "}
+                  <span className="text-lg">Certificate No:</span>{" "}
                   {record.certificateNo ||
                     record.certificateNumber ||
                     record.id ||
@@ -238,7 +239,7 @@ export default function TaxCertificate() {
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-gray-700 font-semibold">
+                <p className="text-gray-700 text-lg">
                   ISSUE DATE:
                 </p>
                 <p className="text-gray-700">
@@ -247,33 +248,33 @@ export default function TaxCertificate() {
               </div>
             </div>
 
-            <div className="text-center mt-24">
-              <p className="text-gray-700 mb-6 text-lg">This is to certify that:</p>
-              <h2 className="text-3xl font-bold text-gray-800 underline mb-6 italic">
+            <div className="text-center mt-18">
+              <p className="text-gray-700 mb-6 text-[35px]">This is to certify that:</p>
+              <h2 className="text-[35px] font-bold text-gray-800 underline mb-6 italic">
                 {record.name || "N/A"}
               </h2>
-              <p className="text-gray-700 mb-3 text-lg">Of:</p>
-              <p className="text-gray-700 font-semibold mb-6 text-lg">
+              <p className="text-gray-700 mb-3 text-[35px]">Of:</p>
+              <p className="text-gray-700  mb-6 text-[35px]">
                 {record.address || "N/A"}
               </p>
-              <p className="text-gray-700 mb-8 text-lg">
+              <p className="text-gray-700 mb-8 text-[35px]">
                 Has settled his/her income tax assessments for the past three years.
               </p>
-              <h3 className="text-xl font-semibold text-gray-800 mb-8">
+              <h3 className="text-4xl text-gray-800 mb-8">
                 Assessment Details as Follows:
               </h3>
             </div>
 
             <div className="mb-10 overflow-x-auto">
-              <table className="w-full border-collapse border-2 border-gray-400 mx-auto max-w-3xl">
+              <table className="w-full border-collapse border-2 border-gray-700 mx-auto max-w-4xl py-0">
                 <thead>
-                  <tr className="border-2 border-gray-400">
-                    <th className="border-2 border-gray-400 px-6 py-3 text-gray-800 font-semibold text-lg">
+                  <tr className="border-2 border-gray-700">
+                    <th className="border-2 border-gray-700 px-6 py-1 text-gray-800 font-semibold text-lg">
                     </th>
                     {displayYears.map((item) => (
                       <th
                         key={item.year}
-                        className="border-2 border-gray-400 px-6 py-3 text-gray-800 font-semibold text-lg"
+                        className="border-2 border-gray-700 px-6 py-1 text-gray-800 font-semibold text-lg"
                       >
                         {item.year}
                       </th>
@@ -283,7 +284,7 @@ export default function TaxCertificate() {
                         (_, index) => (
                           <th
                             key={`empty-${index}`}
-                            className="border-2 border-gray-400 px-6 py-3 text-gray-800 font-semibold text-lg"
+                            className="border-2 border-gray-700 px-6 py-1 text-gray-800 font-semibold text-lg"
                           >
                             N/A
                           </th>
@@ -292,14 +293,14 @@ export default function TaxCertificate() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-2 border-gray-400">
-                    <td className="border-2 border-gray-400 px-6 py-3 text-gray-700 font-semibold text-left text-lg">
+                  <tr className="border-2 border-gray-700">
+                    <td className="border-2 border-gray-700 px-6 py-1 text-gray-700 font-semibold text-left text-lg">
                       Total Income:
                     </td>
                     {displayYears.map((item) => (
                       <td
                         key={`income-${item.year}`}
-                        className="border-2 border-gray-400 px-6 py-3 text-gray-700 text-center font-semibold text-lg"
+                        className="border-2 border-gray-700 px-6 py-0 text-gray-700 text-center font-semibold text-lg"
                       >
                         {getIncomeForYear(item.year)}
                       </td>
@@ -309,21 +310,21 @@ export default function TaxCertificate() {
                         (_, index) => (
                           <td
                             key={`income-empty-${index}`}
-                            className="border-2 border-gray-400 px-6 py-3 text-gray-700 text-center font-semibold text-lg"
+                            className="border-2 border-gray-700 px-6 py-1 text-gray-700 text-center font-semibold text-lg"
                           >
                             ₦ 0.00
                           </td>
                         )
                       )}
                   </tr>
-                  <tr className="border-2 border-gray-400">
-                    <td className="border-2 border-gray-400 px-6 py-3 text-gray-700 font-semibold text-left text-lg">
+                  <tr className="border-2 border-gray-700">
+                    <td className="border-2 border-gray-700 px-6 py-1 text-gray-700 font-semibold text-left text-lg">
                       Tax Paid:
                     </td>
                     {displayYears.map((item) => (
                       <td
                         key={`tax-${item.year}`}
-                        className="border-2 border-gray-400 px-6 py-3 text-gray-700 text-center font-semibold text-lg"
+                        className="border-2 border-gray-700 px-6 py-1 text-gray-700 text-center font-semibold text-lg"
                       >
                         {getTaxPaidForYear(item.year)}
                       </td>
@@ -351,18 +352,18 @@ export default function TaxCertificate() {
             </div>
 
             <div className="text-center mb-10">
-              <h3 className="text-gray-700 text-2xl mb-3">Source(s) of Income</h3>
-              <div className="text-gray-700 font-bold text-base uppercase">
+              <h3 className="text-gray-700 text-[35px] mb-3">Source(s) of Income</h3>
+              <div className="text-gray-700 font-bold text-xl uppercase">
                 {getSourcesOfIncome()}
               </div>
             </div>
 
             <div className="flex justify-between items-start gap-8 mb-16">
               <div className="flex flex-col items-center mt-2">
-                <div className="bg-white p-3 mb-3">
+                <div className="bg-white p-1 mb-3">
                   <QRCodeSVG
                     value={qrValue}
-                    size={140}
+                    size={160}
                     level="H"
                     includeMargin={false}
                   />
@@ -373,7 +374,7 @@ export default function TaxCertificate() {
               </div>
 
               <div className="flex-1 text-center mr-10">
-                <p className="text-gray-700 text-2xl mb-3">
+                <p className="text-gray-700 text-[35px] mb-3">
                   This Certificate expires on
                 </p>
                 <p className="text-gray-700 font-semibold text-xl">
@@ -384,20 +385,20 @@ export default function TaxCertificate() {
               <div className="w-24"></div>
             </div>
 
-            <div className="flex justify-end -mt-24">
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-28 h-20 flex items-center justify-center">
+            <div className="flex justify-end -mt-70">
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-70 h-40 flex items-center justify-center">
                   <img
-                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1768252957/gana67i87nyccquinbgj.png"
+                    src="https://res.cloudinary.com/djr7uqara/image/upload/v1773169822/qldqg5houhpjnixkmpmy.png"
                     alt="Signature"
                     className="w-full h-full object-contain"
                   />
                 </div>
                 <div className="text-center">
-                  <p className="text-gray-800 font-bold text-base">
+                  <p className="text-gray-800 font-extrabold">
                     Executive Chairman
                   </p>
-                  <p className="text-gray-800 font-bold text-base">
+                  <p className="text-gray-800 font-extrabold">
                     YOBE STATE IRS
                   </p>
                 </div>
