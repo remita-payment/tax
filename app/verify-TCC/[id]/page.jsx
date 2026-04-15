@@ -201,7 +201,7 @@ export default function Home() {
                 <div className="text-6xl text-green-400 font-bold mb-2">"</div>
                 
                 {/* Testimonial Text */}
-                <p className="text-white text-base leading-relaxed italic font-light mb-4">
+                <p className="text-white text-sm font-light mb-4">
                   {testimonials[currentTestimonial]}
                 </p>
                 
@@ -226,61 +226,71 @@ export default function Home() {
           
           {/* Right Section - Certificate */}
           <div className="w-full md:w-1/2 bg-white p-4 md:p-8 flex flex-col justify-center items-center">
-            <div className="w-full max-w-sm text-center bg-red-50 p-6">
-              {/* Certificate Status - Color based on expiry */}
+            <div className="w-full max-w-sm text-center bg-red-50 p-6 zoom-container">
+              {/* Certificate Status - Color based on expiry - SMALL TEXT */}
               <div>
-                <h1 className={`text-3xl ${isExpired ? 'text-red-500' : 'text-green-500'}`}>
+                <h1 className={`text-[14px] sm:text-xl md:text- font-semibold ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
                   {isExpired ? 'Certificate is Expired' : 'Certificate is Valid'}
                 </h1>
               </div>
 
-              {/* Certificate Details - Minimal spacing */}
-              <div className="mt-2">
-                {/* Tax ID - Reduced spacing */}
-                <div className="mb-1">
-                  <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>Tax Identification Number:</p>
-                  <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
+              {/* Certificate Details - Minimal spacing with SMALL TEXT */}
+              <div className="mt-2 space-y-1">
+                {/* Tax ID */}
+                <div>
+                  <p className={`text-[10px] sm:text-xs ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                    Tax Identification Number:
+                  </p>
+                  <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold break-words`}>
                     {certificateData.tin || certificateData.taxId || 'N/A'}
                   </p>
                 </div>
 
-                {/* Tax Payer Name - Reduced spacing */}
-                <div className="mb-1">
-                  <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0 `}>Tax Payer Name:</p>
-                  <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'} capitalize`}>
+                {/* Tax Payer Name */}
+                <div>
+                  <p className={`text-[10px] sm:text-xs ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                    Tax Payer Name:
+                  </p>
+                  <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold capitalize break-words`}>
                     {certificateData.name || certificateData.taxpayerName || 'N/A'}
                   </p>
                 </div>
 
-                {/* Certificate Number - Reduced spacing */}
-                <div className="mb-1">
-                  <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>Certificate Number:</p>
-                  <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
+                {/* Certificate Number */}
+                <div>
+                  <p className={`text-[10px] sm:text-xs ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                    Certificate Number:
+                  </p>
+                  <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold break-words`}>
                     {certificateData.certificateNo || certificateData.certificateNumber || 'N/A'}
                   </p>
                 </div>
 
-                {/* Issue Date - Reduced spacing */}
-                <div className="mb-1">
-                  <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>Issue Date:</p>
-                  <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
+                {/* Issue Date */}
+                <div>
+                  <p className={`text-[10px] sm:text-xs ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                    Issue Date:
+                  </p>
+                  <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold`}>
                     {formatDate(certificateData.issueDate || certificateData.createdAt)}
                   </p>
                 </div>
 
-                {/* Expiry Date - Reduced spacing */}
+                {/* Expiry Date */}
                 {certificateData.expiryDate && (
-                  <div className="mb-1">
-                    <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>Expiry Date:</p>
-                    <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
+                  <div>
+                    <p className={`text-[10px] sm:text-xs ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                      Expiry Date:
+                    </p>
+                    <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold`}>
                       {formatDate(certificateData.expiryDate)}
                     </p>
                   </div>
                 )}
 
-                {/* Expiry Status Message - Small text with zoom support */}
-                <div className="mt-2">
-                  <p className={`text-2xl ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
+                {/* Expiry Status Message - VERY SMALL TEXT */}
+                <div className="mt-2 pt-1">
+                  <p className={`text-[14px] sm:text-xl font-bold ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
                     {getExpiryStatus()}
                   </p>
                 </div>
@@ -291,7 +301,7 @@ export default function Home() {
       </div>
       
       {/* Footer */}
-      <footer className="bg-blue-600 bg-opacity-40 px-4 py-4 flex flex-col items-center justify-center text-center text-sm text-blue-100">
+      <footer className="bg-blue-600 bg-opacity-40 px-4 py-4 flex flex-col items-center justify-center text-center text-xs text-blue-100">
         <div className="flex items-center gap-1 justify-center">
           <span>© 2026 Verzon. Crafted with</span>
           <span className="text-red-400">❤️</span>
@@ -299,27 +309,47 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Add zoom support styles */}
+      {/* Zoom support styles */}
       <style jsx global>{`
-        .zoomable {
-          transition: transform 0.2s ease;
+        /* Allow zooming on the entire container */
+        .zoom-container {
+          zoom: 1;
+          transition: zoom 0.1s ease;
         }
+        
+        /* Make text zoomable with hover effect */
+        .zoomable {
+          display: inline-block;
+          transition: transform 0.2s ease;
+          cursor: zoom-in;
+        }
+        
         .zoomable:hover {
           transform: scale(1.05);
         }
-        @media (min-width: 768px) {
-          .zoomable {
-            font-size: 0.875rem;
-          }
-        }
-        /* Enable text zoom on the entire certificate content */
+        
+        /* Enable text zoom for all certificate content */
         .bg-red-50 {
-          zoom: 1;
+          max-width: 100%;
         }
-        @media screen and (min-width: 0px) {
-          .bg-red-50 {
-            zoom: 100%;
+        
+        /* Ensure text can be zoomed via browser zoom */
+        @media screen and (max-width: 768px) {
+          body {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
           }
+        }
+        
+        /* Allow pinch zoom on mobile */
+        @viewport {
+          zoom: 1.0;
+          width: device-width;
+        }
+        
+        /* Make all text in certificate area scalable */
+        .zoom-container * {
+          max-width: 100%;
         }
       `}</style>
     </div>
