@@ -85,7 +85,7 @@ export default function Home() {
     if (isExpired) {
       return `Expired ${Math.abs(daysDifference)} ${Math.abs(daysDifference) === 1 ? 'Day' : 'Days'} Ago`;
     } else {
-      return '';
+      return `${daysDifference} ${daysDifference === 1 ? 'Day' : 'Days'} to Expire`;
     }
   };
 
@@ -227,10 +227,10 @@ export default function Home() {
           {/* Right Section - Certificate */}
           <div className="w-full md:w-1/2 bg-white p-4 md:p-8 flex flex-col justify-center items-center">
             <div className="w-full max-w-sm text-center bg-red-50 p-6">
-              {/* Certificate Status - Reduced margin */}
+              {/* Certificate Status - Color based on expiry */}
               <div>
-                <h1 className={`text-3xl font-semibold ${isExpired ? 'text-red-600' : 'text-green-600'}`}>
-                  {isExpired ? 'Certificate is Expired' : ''}
+                <h1 className={`text-3xl ${isExpired ? 'text-red-500' : 'text-green-500'}`}>
+                  {isExpired ? 'Certificate is Expired' : 'Certificate is Valid'}
                 </h1>
               </div>
 
@@ -238,32 +238,32 @@ export default function Home() {
               <div className="mt-2">
                 {/* Tax ID - Reduced spacing */}
                 <div className="mb-1">
-                  <p className="text-red-500 font-medium mb-0">Tax Identification Number:</p>
-                  <p className="text-red-600 text-lg font-semibold">
+                  <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>Tax Identification Number:</p>
+                  <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
                     {certificateData.tin || certificateData.taxId || 'N/A'}
                   </p>
                 </div>
 
                 {/* Tax Payer Name - Reduced spacing */}
                 <div className="mb-1">
-                  <p className="text-red-500 font-medium mb-0">Tax Payer Name:</p>
-                  <p className="text-red-600 text-lg font-semibold">
+                  <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0 `}>Tax Payer Name:</p>
+                  <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'} capitalize`}>
                     {certificateData.name || certificateData.taxpayerName || 'N/A'}
                   </p>
                 </div>
 
                 {/* Certificate Number - Reduced spacing */}
                 <div className="mb-1">
-                  <p className="text-red-500 font-medium mb-0">Certificate Number:</p>
-                  <p className="text-red-600 text-lg font-semibold">
+                  <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>Certificate Number:</p>
+                  <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
                     {certificateData.certificateNo || certificateData.certificateNumber || 'N/A'}
                   </p>
                 </div>
 
                 {/* Issue Date - Reduced spacing */}
                 <div className="mb-1">
-                  <p className="text-red-500 font-medium mb-0">Issue Date:</p>
-                  <p className="text-red-600 text-lg font-semibold">
+                  <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>Issue Date:</p>
+                  <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
                     {formatDate(certificateData.issueDate || certificateData.createdAt)}
                   </p>
                 </div>
@@ -271,21 +271,19 @@ export default function Home() {
                 {/* Expiry Date - Reduced spacing */}
                 {certificateData.expiryDate && (
                   <div className="mb-1">
-                    <p className="text-red-500 font-medium mb-0">Expiry Date:</p>
-                    <p className="text-red-600 text-lg font-semibold">
+                    <p className={`${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>Expiry Date:</p>
+                    <p className={`text-lg ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
                       {formatDate(certificateData.expiryDate)}
                     </p>
                   </div>
                 )}
 
-                {/* Expired Status - Reduced spacing */}
-                {isExpired && (
-                  <div className="mt-2">
-                    <p className="text-red-600 text-xl font-semibold">
-                      {getExpiryStatus()}
-                    </p>
-                  </div>
-                )}
+                {/* Expiry Status Message - Small text with zoom support */}
+                <div className="mt-2">
+                  <p className={`text-2xl ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
+                    {getExpiryStatus()}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -300,6 +298,30 @@ export default function Home() {
           <span>by Themesbrand</span>
         </div>
       </footer>
+
+      {/* Add zoom support styles */}
+      <style jsx global>{`
+        .zoomable {
+          transition: transform 0.2s ease;
+        }
+        .zoomable:hover {
+          transform: scale(1.05);
+        }
+        @media (min-width: 768px) {
+          .zoomable {
+            font-size: 0.875rem;
+          }
+        }
+        /* Enable text zoom on the entire certificate content */
+        .bg-red-50 {
+          zoom: 1;
+        }
+        @media screen and (min-width: 0px) {
+          .bg-red-50 {
+            zoom: 100%;
+          }
+        }
+      `}</style>
     </div>
   );
 }
