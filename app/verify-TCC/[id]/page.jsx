@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { getRecordById } from '@/actions/tax';
 import { useParams } from 'next/navigation';
+import { Quote } from 'lucide-react';
+
 
 export default function Home() {
   const testimonials = [
@@ -198,15 +200,17 @@ export default function Home() {
               {/* Quote Section */}
               <div className="flex-1 flex flex-col justify-center">
                 {/* Quote Mark */}
-                <div className="text-6xl text-green-400 font-bold mb-2">"</div>
+                <div className='mb-2'>
+<Quote className="rotate-180 fill-green-400 stroke-none" />
+                </div>
                 
                 {/* Testimonial Text */}
-                <p className="text-white text-sm font-light mb-4">
+                <p className="text-white text-[11px] font-light mb-4">
                   {testimonials[currentTestimonial]}
                 </p>
                 
                 {/* Carousel Indicators */}
-                <div className="flex justify-center items-center gap-2 mt-4">
+                <div className="flex justify-center items-center gap-1 mt-4">
                   {testimonials.map((_, index) => (
                     <button
                       key={index}
