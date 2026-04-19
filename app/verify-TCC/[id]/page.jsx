@@ -189,7 +189,7 @@ export default function Home() {
               {/* Logo Section */}
               <div className="w-20 h-20 relative">
                 <Image
-                  src="https://res.cloudinary.com/djr7uqara/image/upload/v1768251368/lunppgqxrwcyfyymr0lm.jpg"
+                  src="https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png"
                   alt="YIRS Logo"
                   width={80}
                   height={80}
