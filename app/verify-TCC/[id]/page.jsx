@@ -187,7 +187,7 @@ export default function Home() {
             {/* Content wrapper */}
             <div className="relative z-10 flex flex-col h-full justify-between -mt-2">
               {/* Logo Section */}
-              <div className="w-20 h-20 relative">
+              <div className="w-20 h-20 relative -ml-2">
                 <Image
                   src="https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png"
                   alt="YIRS Logo"
