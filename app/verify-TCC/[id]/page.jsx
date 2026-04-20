@@ -206,7 +206,7 @@ export default function Home() {
                 
                 {/* Testimonial Text */}
                 <div className="flex justify-center">
-  <p className="text-center text-white text-[8px] md:text-base lg:text-sm font-light mb-4">
+  <p className="text-center text-white text-[6px] md:text-base lg:text-sm font-light mb-4">
     {testimonials[currentTestimonial]}
   </p>
 </div>
