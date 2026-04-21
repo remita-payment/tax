@@ -8,9 +8,9 @@ import { Quote } from "lucide-react";
 
 export default function Home() {
   const testimonials = [
-    "Introducing GovTaxPro: Simplifying Government Tax Collection - Our software revolutionizes tax collection for government agencies, providing a streamlined and user-friendly solution that automates processes, enhances compliance, and boosts revenue generation!",
-    "Empower Your Tax Administration with GovTaxPro: Designed specifically for government agencies, our cutting-edge software offers comprehensive features to manage tax collection efficiently, ensuring accuracy, transparency, and improved taxpayer engagement.",
-    "Enhance Revenue Streams with GovTaxPro: Maximize your tax collection potential and reduce revenue leakage with our advanced software. From seamless data integration to intelligent analytics, GovTaxPro empowers agencies to optimize tax assessment, streamline payments, and improve overall financial performance.",
+    '"Introducing GovTaxPro: Simplifying Government Tax Collection - Our software revolutionizes tax collection for government agencies, providing a streamlined and user-friendly solution that automates processes, enhances compliance, and boosts revenue generation!"',
+    '"Empower Your Tax Administration with GovTaxPro: Designed specifically for government agencies, our cutting-edge software offers comprehensive features to manage tax collection efficiently, ensuring accuracy, transparency, and improved taxpayer engagement."',
+    '"Enhance Revenue Streams with GovTaxPro: Maximize your tax collection potential and reduce revenue leakage with our advanced software. From seamless data integration to intelligent analytics, GovTaxPro empowers agencies to optimize tax assessment, streamline payments, and improve overall financial performance."',
   ];
 
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -197,7 +197,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 opacity-90"></div>
 
             {/* Content wrapper */}
-            <div className="relative z-10 flex flex-col h-full justify-between -mt-2 -ml-4">
+            <div className="relative z-10 flex flex-col h-full justify-between -mt-6 -ml-4">
               {/* Logo Section */}
               <div className="w-20 h-20 relative -ml-2">
                 <Image
@@ -212,7 +212,7 @@ export default function Home() {
               {/* Quote Section */}
               <div className="flex-1 flex flex-col justify-center">
                 {/* Quote Mark */}
-                <div className="mb-2">
+                <div className="mb-2 -mt-2 -ml-1">
                   <Quote className="rotate-180 fill-green-400 stroke-none" />
                 </div>
 
