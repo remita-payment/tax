@@ -1,17 +1,16 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { getRecordById } from '@/actions/tax';
-import { useParams } from 'next/navigation';
-import { Quote } from 'lucide-react';
-
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { getRecordById } from "@/actions/tax";
+import { useParams } from "next/navigation";
+import { Quote } from "lucide-react";
 
 export default function Home() {
   const testimonials = [
     "Introducing GovTaxPro: Simplifying Government Tax Collection - Our software revolutionizes tax collection for government agencies, providing a streamlined and user-friendly solution that automates processes, enhances compliance, and boosts revenue generation!",
     "Empower Your Tax Administration with GovTaxPro: Designed specifically for government agencies, our cutting-edge software offers comprehensive features to manage tax collection efficiently, ensuring accuracy, transparency, and improved taxpayer engagement.",
-    "Enhance Revenue Streams with GovTaxPro: Maximize your tax collection potential and reduce revenue leakage with our advanced software. From seamless data integration to intelligent analytics, GovTaxPro empowers agencies to optimize tax assessment, streamline payments, and improve overall financial performance."
+    "Enhance Revenue Streams with GovTaxPro: Maximize your tax collection potential and reduce revenue leakage with our advanced software. From seamless data integration to intelligent analytics, GovTaxPro empowers agencies to optimize tax assessment, streamline payments, and improve overall financial performance.",
   ];
 
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -19,8 +18,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [isExpired, setIsExpired] = useState(false);
   const [daysDifference, setDaysDifference] = useState(0);
-  
- const {id} = useParams()
+
+  const { id } = useParams();
 
   // Fetch certificate data
   useEffect(() => {
@@ -35,25 +34,25 @@ export default function Home() {
         const result = await getRecordById(id);
         if (result.success) {
           setCertificateData(result.data);
-          
+
           // Check if certificate is expired
           if (result.data.expiryDate) {
             const expiryDate = new Date(result.data.expiryDate);
             const today = new Date();
-            
+
             // Reset time to compare only dates
             expiryDate.setHours(0, 0, 0, 0);
             today.setHours(0, 0, 0, 0);
-            
+
             const diffTime = expiryDate.getTime() - today.getTime();
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
+
             setDaysDifference(diffDays);
             setIsExpired(diffDays < 0);
           }
         }
       } catch (err) {
-        console.error('Error fetching certificate:', err);
+        console.error("Error fetching certificate:", err);
       } finally {
         setLoading(false);
       }
@@ -68,26 +67,26 @@ export default function Home() {
 
   // Format date function
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     try {
       const date = new Date(dateString);
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = date.toLocaleString('en-US', { month: 'short' });
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = date.toLocaleString("en-US", { month: "short" });
       const year = date.getFullYear();
       return `${day} ${month}, ${year}`;
     } catch (error) {
-      return 'Invalid Date';
+      return "Invalid Date";
     }
   };
 
   // Format expiry status message
   const getExpiryStatus = () => {
-    if (!certificateData?.expiryDate) return '';
-    
+    if (!certificateData?.expiryDate) return "";
+
     if (isExpired) {
-      return `Expired ${Math.abs(daysDifference)} ${Math.abs(daysDifference) === 1 ? 'Day' : 'Days'} Ago`;
+      return `Expired ${Math.abs(daysDifference)} ${Math.abs(daysDifference) === 1 ? "Day" : "Days"} Ago`;
     } else {
-      return `${daysDifference} ${daysDifference === 1 ? 'Day' : 'Days'} to Expire`;
+      return `${daysDifference} ${daysDifference === 1 ? "Day" : "Days"} to Expire`;
     }
   };
 
@@ -116,7 +115,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            
+
             {/* Right Section Skeleton */}
             <div className="w-full md:w-1/2 bg-white p-12 flex flex-col justify-center items-center">
               <div className="w-full max-w-sm text-center space-y-6">
@@ -133,7 +132,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        
+
         <footer className="bg-blue-600 bg-opacity-40 px-4 py-4">
           <div className="h-4 w-48 bg-blue-400 animate-pulse rounded mx-auto"></div>
         </footer>
@@ -146,9 +145,15 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-gradient-to-r from-teal-500 via-blue-500 to-blue-600 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-2xl max-w-md text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">No Certificate ID Provided</h1>
-          <p className="text-gray-600 mb-6">Please provide a certificate ID to verify.</p>
-          <p className="text-sm text-gray-500">Add ?id=YOUR_CERTIFICATE_ID to the URL</p>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            No Certificate ID Provided
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Please provide a certificate ID to verify.
+          </p>
+          <p className="text-sm text-gray-500">
+            Add ?id=YOUR_CERTIFICATE_ID to the URL
+          </p>
         </div>
       </div>
     );
@@ -159,9 +164,15 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-gradient-to-r from-teal-500 via-blue-500 to-blue-600 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-2xl max-w-md text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Certificate Not Found</h1>
-          <p className="text-gray-600 mb-6">Unable to find certificate with ID: {id}</p>
-          <p className="text-sm text-gray-500">Please check the certificate ID and try again.</p>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            Certificate Not Found
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Unable to find certificate with ID: {id}
+          </p>
+          <p className="text-sm text-gray-500">
+            Please check the certificate ID and try again.
+          </p>
         </div>
       </div>
     );
@@ -176,16 +187,17 @@ export default function Home() {
           <div
             className="w-full md:w-1/2 p-8 flex-col justify-between relative overflow-hidden flex"
             style={{
-              backgroundImage: 'url(https://res.cloudinary.com/djr7uqara/image/upload/v1768768664/lv9towhxzuvwjj8yxxjn.jpg)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              backgroundImage:
+                "url(https://res.cloudinary.com/djr7uqara/image/upload/v1768768664/lv9towhxzuvwjj8yxxjn.jpg)",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
           >
             {/* Blue Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 opacity-90"></div>
 
             {/* Content wrapper */}
-            <div className="relative z-10 flex flex-col h-full justify-between -mt-2">
+            <div className="relative z-10 flex flex-col h-full justify-between -mt-2 -ml-4">
               {/* Logo Section */}
               <div className="w-20 h-20 relative -ml-2">
                 <Image
@@ -200,17 +212,17 @@ export default function Home() {
               {/* Quote Section */}
               <div className="flex-1 flex flex-col justify-center">
                 {/* Quote Mark */}
-                <div className='mb-2'>
-<Quote className="rotate-180 fill-green-400 stroke-none" />
+                <div className="mb-2">
+                  <Quote className="rotate-180 fill-green-400 stroke-none" />
                 </div>
-                
+
                 {/* Testimonial Text */}
                 <div className="flex justify-center">
-  <p className="text-center text-white text-[6px] md:text-base lg:text-sm font-light mb-4">
-    {testimonials[currentTestimonial]}
-  </p>
-</div>
-                
+                  <p className="text-center text-white text-[6px] md:text-base lg:text-sm font-light mb-2">
+                    {testimonials[currentTestimonial]}
+                  </p>
+                </div>
+
                 {/* Carousel Indicators */}
                 <div className="flex justify-center items-center gap-1 mt-4">
                   {testimonials.map((_, index) => (
@@ -218,9 +230,9 @@ export default function Home() {
                       key={index}
                       onClick={() => goToTestimonial(index)}
                       className={`h-1 transition-all duration-300 cursor-pointer rounded-full ${
-                        index === currentTestimonial 
-                          ? 'w-4 bg-white' 
-                          : 'w-4 bg-white opacity-50 hover:opacity-100'
+                        index === currentTestimonial
+                          ? "w-4 bg-white"
+                          : "w-4 bg-white opacity-50 hover:opacity-100"
                       }`}
                       aria-label={`Go to testimonial ${index + 1}`}
                     />
@@ -229,14 +241,18 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
+
           {/* Right Section - Certificate */}
           <div className="w-full md:w-1/2 bg-white p-4 md:p-8 flex flex-col justify-center items-center">
             <div className="w-full max-w-sm text-center bg-green-50 p-6 zoom-container font-bold">
               {/* Certificate Status - Color based on expiry - SMALL TEXT */}
               <div>
-                <h1 className={`text-[14px] sm:text-xl md:text- font-semibold ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
-                  {isExpired ? 'Certificate is Expired' : 'Certificate is Valid'}
+                <h1
+                  className={`text-[14px] sm:text-xl md:text- font-semibold ${isExpired ? "text-red-500" : "text-green-600"}`}
+                >
+                  {isExpired
+                    ? "Certificate is Expired"
+                    : "Certificate is Valid"}
                 </h1>
               </div>
 
@@ -244,51 +260,77 @@ export default function Home() {
               <div className="mt-2 space-y-1">
                 {/* Tax ID */}
                 <div>
-                  <p className={`text-[11px] ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                  <p
+                    className={`text-[11px] ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                  >
                     Tax Identification Number:
                   </p>
-                  <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold break-words`}>
-                    {certificateData.tin || certificateData.taxId || 'N/A'}
+                  <p
+                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold break-words`}
+                  >
+                    {certificateData.tin || certificateData.taxId || "N/A"}
                   </p>
                 </div>
 
                 {/* Tax Payer Name */}
                 <div>
-                  <p className={`text-[10px] sm:text-xs ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                  <p
+                    className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                  >
                     Tax Payer Name:
                   </p>
-                  <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold capitalize break-words`}>
-                    {certificateData.name || certificateData.taxpayerName || 'N/A'}
+                  <p
+                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold capitalize break-words`}
+                  >
+                    {certificateData.name ||
+                      certificateData.taxpayerName ||
+                      "N/A"}
                   </p>
                 </div>
 
                 {/* Certificate Number */}
                 <div>
-                  <p className={`text-[10px] sm:text-xs ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                  <p
+                    className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                  >
                     Certificate Number:
                   </p>
-                  <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold break-words`}>
-                    {certificateData.certificateNo || certificateData.certificateNumber || 'N/A'}
+                  <p
+                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold break-words`}
+                  >
+                    {certificateData.certificateNo ||
+                      certificateData.certificateNumber ||
+                      "N/A"}
                   </p>
                 </div>
 
                 {/* Issue Date */}
                 <div>
-                  <p className={`text-[10px] sm:text-xs ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                  <p
+                    className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                  >
                     Issue Date:
                   </p>
-                  <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold`}>
-                    {formatDate(certificateData.issueDate || certificateData.createdAt)}
+                  <p
+                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold`}
+                  >
+                    {formatDate(
+                      certificateData.issueDate || certificateData.createdAt,
+                    )}
                   </p>
                 </div>
 
                 {/* Expiry Date */}
                 {certificateData.expiryDate && (
                   <div>
-                    <p className={`text-[10px] sm:text-xs ${isExpired ? 'text-red-500' : 'text-green-600'} font-medium mb-0`}>
+                    <p
+                      className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                    >
                       Expiry Date:
                     </p>
-                    <p className={`text-[11px] sm:text-sm ${isExpired ? 'text-red-500' : 'text-green-600'} font-semibold`}>
+                    <p
+                      className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold`}
+                    >
                       {formatDate(certificateData.expiryDate)}
                     </p>
                   </div>
@@ -296,7 +338,9 @@ export default function Home() {
 
                 {/* Expiry Status Message - VERY SMALL TEXT */}
                 <div className="mt-2 pt-1">
-                  <p className={`text-[14px] sm:text-xl font-bold ${isExpired ? 'text-red-500' : 'text-green-600'}`}>
+                  <p
+                    className={`text-[14px] sm:text-xl font-bold ${isExpired ? "text-red-500" : "text-green-600"}`}
+                  >
                     {getExpiryStatus()}
                   </p>
                 </div>
@@ -305,7 +349,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      
+
       {/* Footer */}
       <footer className="bg-blue-600 bg-opacity-40 px-4 py-4 flex flex-col items-center justify-center text-center text-xs text-blue-100">
         <div className="flex items-center gap-1 justify-center">
@@ -322,23 +366,23 @@ export default function Home() {
           zoom: 1;
           transition: zoom 0.1s ease;
         }
-        
+
         /* Make text zoomable with hover effect */
         .zoomable {
           display: inline-block;
           transition: transform 0.2s ease;
           cursor: zoom-in;
         }
-        
+
         .zoomable:hover {
           transform: scale(1.05);
         }
-        
+
         /* Enable text zoom for all certificate content */
         .bg-red-50 {
           max-width: 100%;
         }
-        
+
         /* Ensure text can be zoomed via browser zoom */
         @media screen and (max-width: 768px) {
           body {
@@ -346,13 +390,13 @@ export default function Home() {
             text-size-adjust: 100%;
           }
         }
-        
+
         /* Allow pinch zoom on mobile */
         @viewport {
-          zoom: 1.0;
+          zoom: 1;
           width: device-width;
         }
-        
+
         /* Make all text in certificate area scalable */
         .zoom-container * {
           max-width: 100%;
