@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { getRecordById } from "@/actions/tax";
 import { useParams } from "next/navigation";
-import { Quote } from "lucide-react";
 
 export default function Home() {
   const testimonials = [
@@ -20,6 +19,16 @@ export default function Home() {
   const [daysDifference, setDaysDifference] = useState(0);
 
   const { id } = useParams();
+
+  // Auto-rotate testimonials every 20 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 10000); // 10 seconds
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
 
   // Fetch certificate data
   useEffect(() => {
@@ -201,7 +210,7 @@ export default function Home() {
               {/* Logo Section */}
               <div className="w-20 h-20 relative -ml-2">
                 <Image
-                  src="https://res.cloudinary.com/djr7uqara/image/upload/v1770845279/fd6e1qilut0ctvbpqrhd.png"
+                  src="https://res.cloudinary.com/djr7uqara/image/upload/v1777149180/uritj7huyurixbsvtpsl.png"
                   alt="YIRS Logo"
                   width={60}
                   height={60}
@@ -213,9 +222,15 @@ export default function Home() {
               <div className="flex-1 flex flex-col justify-center">
                 {/* Quote Mark */}
                 <div className="mb-2 -mt-2 -ml-1">
-                  <Quote className="rotate-180 fill-green-400 stroke-none" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-10 h-10 text-[#67b173]"
+                  >
+                    <path d="M4.58341 17.3211C3.55316 16.2274 3 15 3 13.0103C3 9.51086 5.45651 6.37366 9.03059 4.82318L9.92328 6.20079C6.58804 8.00539 5.93618 10.346 5.67564 11.822C6.21263 11.5443 6.91558 11.4466 7.60471 11.5105C9.40908 11.6778 10.8312 13.159 10.8312 15C10.8312 16.933 9.26416 18.5 7.33116 18.5C6.2581 18.5 5.23196 18.0095 4.58341 17.3211ZM14.5834 17.3211C13.5532 16.2274 13 15 13 13.0103C13 9.51086 15.4565 6.37366 19.0306 4.82318L19.9233 6.20079C16.588 8.00539 15.9362 10.346 15.6756 11.822C16.2126 11.5443 16.9156 11.4466 17.6047 11.5105C19.4091 11.6778 20.8312 13.159 20.8312 15C20.8312 16.933 19.2642 18.5 17.3312 18.5C16.2581 18.5 15.232 18.0095 14.5834 17.3211Z" />
+                  </svg>
                 </div>
-
                 {/* Testimonial Text */}
                 <div className="flex justify-center">
                   <p className="text-center text-white text-[6px] md:text-base lg:text-sm font-light mb-2">
@@ -244,11 +259,11 @@ export default function Home() {
 
           {/* Right Section - Certificate */}
           <div className="w-full md:w-1/2 bg-white p-4 md:p-8 flex flex-col justify-center items-center">
-            <div className="w-full max-w-sm text-center bg-green-50 p-6 zoom-container font-bold">
+            <div className="w-full max-w-sm text-center bg-[#e8f3ea] p-6 zoom-container font-bold">
               {/* Certificate Status - Color based on expiry - SMALL TEXT */}
               <div>
                 <h1
-                  className={`text-[14px] sm:text-xl md:text- font-semibold ${isExpired ? "text-red-500" : "text-green-600"}`}
+                  className={`text-[14px] sm:text-xl md:text- font-semibold ${isExpired ? "text-red-500" : "text-[#53885c]"}`}
                 >
                   {isExpired
                     ? "Certificate is Expired"
@@ -261,12 +276,12 @@ export default function Home() {
                 {/* Tax ID */}
                 <div>
                   <p
-                    className={`text-[11px] ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                    className={`text-[11px] ${isExpired ? "text-red-500" : "text-[#53885c]"} font-medium mb-0`}
                   >
                     Tax Identification Number:
                   </p>
                   <p
-                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold break-words`}
+                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-[#53885c]"} font-semibold break-words`}
                   >
                     {certificateData.tin || certificateData.taxId || "N/A"}
                   </p>
@@ -275,12 +290,12 @@ export default function Home() {
                 {/* Tax Payer Name */}
                 <div>
                   <p
-                    className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                    className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-[#53885c]"} font-medium mb-0`}
                   >
                     Tax Payer Name:
                   </p>
                   <p
-                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold capitalize break-words`}
+                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-[#53885c]"} font-semibold capitalize break-words`}
                   >
                     {certificateData.name ||
                       certificateData.taxpayerName ||
@@ -291,12 +306,12 @@ export default function Home() {
                 {/* Certificate Number */}
                 <div>
                   <p
-                    className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                    className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-[#53885c]"} font-medium mb-0`}
                   >
                     Certificate Number:
                   </p>
                   <p
-                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold break-words`}
+                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-[#53885c]"} font-semibold break-words`}
                   >
                     {certificateData.certificateNo ||
                       certificateData.certificateNumber ||
@@ -307,12 +322,12 @@ export default function Home() {
                 {/* Issue Date */}
                 <div>
                   <p
-                    className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                    className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-[#53885c]"} font-medium mb-0`}
                   >
                     Issue Date:
                   </p>
                   <p
-                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold`}
+                    className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-[#53885c]"} font-semibold`}
                   >
                     {formatDate(
                       certificateData.issueDate || certificateData.createdAt,
@@ -324,12 +339,12 @@ export default function Home() {
                 {certificateData.expiryDate && (
                   <div>
                     <p
-                      className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-green-600"} font-medium mb-0`}
+                      className={`text-[10px] sm:text-xs ${isExpired ? "text-red-500" : "text-[#53885c]"} font-medium mb-0`}
                     >
                       Expiry Date:
                     </p>
                     <p
-                      className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-green-600"} font-semibold`}
+                      className={`text-[11px] sm:text-sm ${isExpired ? "text-red-500" : "text-[#53885c]"} font-semibold`}
                     >
                       {formatDate(certificateData.expiryDate)}
                     </p>
@@ -339,7 +354,7 @@ export default function Home() {
                 {/* Expiry Status Message - VERY SMALL TEXT */}
                 <div className="mt-2 pt-1">
                   <p
-                    className={`text-[14px] sm:text-xl font-bold ${isExpired ? "text-red-500" : "text-green-600"}`}
+                    className={`text-[14px] sm:text-xl font-bold ${isExpired ? "text-red-500" : "text-[#53885c]"}`}
                   >
                     {getExpiryStatus()}
                   </p>
