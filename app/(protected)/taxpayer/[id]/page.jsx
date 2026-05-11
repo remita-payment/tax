@@ -217,7 +217,7 @@ export default function TaxCertificate() {
               </div>
             </div>
 
-            <div className="-mb-2 flex items-center justify-center w-full -mt-12">
+            <div className="-mb-2 flex items-center justify-center w-full -mt-10">
               <div className="flex-1 border-t-8 border-double border-red-400"></div>
               <h3 className="mx-6 text-[24px] font-bold text-gray-800 whitespace-nowrap">
                 e-TAX CLEARANCE CERTIFICATE
@@ -227,19 +227,19 @@ export default function TaxCertificate() {
 
             <div className="flex justify-between text-base mb-12">
               <div>
-                <p className="text-gray-700">
-                  <span className="text-lg">TIN:</span> {record.tin || "N/A"}
+                <p className="text-gray-700 text-xl">
+                  <span className="">TIN:</span> {record.tin || "N/A"}
                 </p>
-                <p className="text-gray-700 mt-2">
-                  <span className="text-lg">Certificate No:</span>{" "}
+                <p className="text-gray-700 mt-2 text-xl">
+                  <span className="text-xl">Certificate No:</span>{" "}
                   {record.certificateNo ||
                     record.certificateNumber ||
                     record.id ||
                     "N/A"}
                 </p>
               </div>
-              <div className="text-right">
-                <p className="text-gray-700 text-lg">
+              <div className="text-right text-xl">
+                <p className="text-gray-700">
                   ISSUE DATE:
                 </p>
                 <p className="text-gray-700">
@@ -387,18 +387,18 @@ export default function TaxCertificate() {
 
             <div className="flex justify-end -mt-70">
               <div className="flex flex-col items-center gap-2">
-                <div className="w-70 h-40 flex items-center justify-center">
+                <div className="w-80 h-50 flex items-center justify-center">
                   <img
                     src="https://res.cloudinary.com/djr7uqara/image/upload/v1773169822/qldqg5houhpjnixkmpmy.png"
                     alt="Signature"
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <div className="text-center">
-                  <p className="text-gray-800 font-extrabold">
+                <div className="text-left -mt-6">
+                  <p className="text-gray-800 font-extrabold text-lg">
                     Executive Chairman
                   </p>
-                  <p className="text-gray-800 font-extrabold">
+                  <p className="text-gray-800 font-extrabold text-lg">
                     YOBE STATE IRS
                   </p>
                 </div>
